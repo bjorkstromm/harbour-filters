@@ -33,20 +33,7 @@
 GalleryItemModel::GalleryItemModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    QDirIterator iter(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
-                      QStringList() << "*.png" << "*.jpg" << "*.jpeg",
-                      QDir::NoFilter,
-                      QDirIterator::Subdirectories);
 
-    while(iter.hasNext())
-    {
-        iter.next();
-
-        if (iter.fileInfo().isFile())
-        {
-            AddImageFileSorted(iter.fileInfo(), 0, m_imageFiles.length() -1);
-        }
-    }
 }
 
 
@@ -75,6 +62,36 @@ QVariant GalleryItemModel::data(const QModelIndex &index, int role) const
     }
 }
 
+void GalleryItemModel::refresh()
+{
+    foreach (QFileInfo fi, m_imageFiles)
+    {
+        if(!QFile::exists(fi.absoluteFilePath()))
+        {
+            int index = m_imageFiles.indexOf(fi);
+
+            beginRemoveRows(QModelIndex(),index,index);
+            m_imageFiles.removeAt(index);
+            endRemoveRows();
+        }
+    }
+
+    QDirIterator iter(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
+                      QStringList() << "*.png" << "*.jpg" << "*.jpeg",
+                      QDir::NoFilter,
+                      QDirIterator::Subdirectories);
+
+    while(iter.hasNext())
+    {
+        iter.next();
+
+        if (iter.fileInfo().isFile() && !m_imageFiles.contains(iter.fileInfo()))
+        {
+            AddImageFileSorted(iter.fileInfo(), 0, m_imageFiles.length() -1);
+        }
+    }
+}
+
 QHash<int, QByteArray> GalleryItemModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -88,7 +105,9 @@ void GalleryItemModel::AddImageFileSorted(const QFileInfo &file, int min, int ma
 {
     if (max < min)
     {
+        beginInsertRows(QModelIndex(),min,min);
         m_imageFiles.insert(min,file);
+        endInsertRows();
     }
     else
     {
@@ -112,7 +131,9 @@ void GalleryItemModel::AddImageFileSorted(const QFileInfo &file, int min, int ma
         else
         {
             // key has been found
+            beginInsertRows(QModelIndex(),mid,mid);
             m_imageFiles.insert(mid,file);
+            endInsertRows();
         }
     }
 }

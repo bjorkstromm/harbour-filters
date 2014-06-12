@@ -105,7 +105,6 @@ void FilteredImage::setSource(const QString &source)
     if(m_source != source)
     {
         m_source = source;
-        //m_image.load(m_source);
 
         QImageReader ir(m_source);
         QByteArray format(ir.format());
