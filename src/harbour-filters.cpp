@@ -40,6 +40,7 @@
 
 #include "src/models/galleryitemmodel.h"
 #include "src/models/filteredimage.h"
+#include "src/models/filteredcoverimage.h"
 #include "src/models/filterlistmodel.h"
 #include "src/models/filterparameterlistmodel.h"
 
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<GalleryItemModel>("harbour.filters", 1, 0, "GalleryModel");
     qmlRegisterType<FilteredImage>("harbour.filters", 1, 0, "FilteredImage");
+    qmlRegisterType<FilteredCoverImage>("harbour.filters", 1, 0, "FilteredCoverImage");
     qmlRegisterType<FilterListModel>("harbour.filters", 1, 0, "FilterListModel");
     qmlRegisterType<FilterParameterListModel>("harbour.filters", 1, 0, "FilterParameterListModel");
 

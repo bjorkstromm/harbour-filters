@@ -27,22 +27,28 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 
+import harbour.filters 1.0
+
 CoverBackground {
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: "My Cover"
-    }
+    SilicaGridView {
+        id: grid
+        cellWidth: width / 2
+        cellHeight: height / 3
 
-    CoverActionList {
-        id: coverAction
+        anchors.fill: parent
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-next"
+        model: GalleryModel {
+
         }
 
-        CoverAction {
-            iconSource: "image://theme/icon-cover-pause"
+        delegate: Image {
+            asynchronous: true
+            // From org.nemomobile.thumbnailer
+            source:  "image://nemoThumbnail/" + url
+            sourceSize.width: grid.cellWidth
+            sourceSize.height: grid.cellHeight
+
+            fillMode: Image.PreserveAspectCrop
         }
     }
 }

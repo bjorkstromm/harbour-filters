@@ -29,13 +29,17 @@
 #include <QDirIterator>
 #include <QStandardPaths>
 #include <QDateTime>
+#include <QTimer>
 
 GalleryItemModel::GalleryItemModel(QObject *parent) :
     QAbstractListModel(parent)
 {
+    QTimer *timer = new QTimer(this);
 
+    connect(timer,SIGNAL(timeout()),SLOT(refresh()));
+
+    timer->start(2500);
 }
-
 
 int GalleryItemModel::rowCount(const QModelIndex &parent) const
 {

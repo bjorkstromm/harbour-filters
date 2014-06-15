@@ -28,7 +28,8 @@ SOURCES += src/harbour-filters.cpp \
     src/models/filterlistmodel.cpp \
     src/filters/imagefilterparameter.cpp \
     src/models/filterparameterlistmodel.cpp \
-    src/filters/rgbfilter.cpp
+    src/filters/rgbfilter.cpp \
+    src/models/filteredcoverimage.cpp
 
 OTHER_FILES += qml/harbour-filters.qml \
     qml/cover/CoverPage.qml \
@@ -60,5 +61,6 @@ HEADERS += \
     src/models/filterlistmodel.h \
     src/filters/imagefilterparameter.h \
     src/models/filterparameterlistmodel.h \
-    src/filters/rgbfilter.h
+    src/filters/rgbfilter.h \
+    src/models/filteredcoverimage.h
 

@@ -51,7 +51,8 @@ public:
     virtual void paint(QPainter *painter);
 
 signals:
-    void sourceChanged(QString);
+    void sourceChanged(QString source);
+    void filterApplied(QImage filter);
 
 public slots:
 

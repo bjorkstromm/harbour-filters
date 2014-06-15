@@ -45,14 +45,13 @@ public:
 
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 
+public slots:
     Q_INVOKABLE void refresh();
 
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 signals:
-
-public slots:
 
 private:
     void AddImageFileSorted(const QFileInfo &file, int min, int max);

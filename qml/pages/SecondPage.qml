@@ -157,6 +157,8 @@ Page {
             anchors.fill: parent
             contentWidth: container.width
             contentHeight: container.height
+//            contentWidth: filteredImage.contentsSize.width
+//            contentHeight: filteredImage.contentsSize.height
             clip: true
             interactive: !drawer.open
 
@@ -173,6 +175,12 @@ Page {
                     anchors.centerIn: parent
                     smooth: !flickable.moving
 
+                    function fitToScreen() {
+                        scale = Math.min(flickable.width / width, flickable.height / height, 1)
+                        pinchArea.pinch.minimumScale = scale
+                        prevScale = scale
+                    }
+
                     onScaleChanged: {
                         if ((width * scale) > flickable.width) {
                             var xoff = (flickable.width / 2 + flickable.contentX) * scale / prevScale;
@@ -186,18 +194,27 @@ Page {
                     }
 
                     Component.onCompleted: {
-                        filteredImage.width = flickable.width;
-                        filteredImage.height = flickable.height;
+                        fitToScreen();
                     }
+
+                    onFilterApplied: {
+                        filteredCoverImage.image = filter;
+                    }
+
+//                    Component.onCompleted: {
+//                        filteredImage.width = flickable.width;
+//                        filteredImage.height = flickable.height;
+//                    }
                 }
             }
 
             PinchArea {
+                id: pinchArea
                 anchors.fill: parent
                 enabled: !drawer.open
                 pinch.target: filteredImage
                 pinch.minimumScale: 1
-                pinch.maximumScale: 4
+                pinch.maximumScale: 2
 
                 /*onPinchStarted: {
                     console.debug("Started pinch...");
@@ -213,6 +230,26 @@ Page {
                     onClicked: drawer.open = !drawer.open
                 }
             }
+        }
+    }
+
+    onStatusChanged: {
+        if(status === PageStatus.Active)
+        {
+            mainWindow.cover = imgCover;
+        }
+        else if(status === PageStatus.Inactive)
+        {
+            mainWindow.cover = Qt.resolvedUrl("cover/CoverPage.qml");
+        }
+    }
+
+    Component {
+        id: imgCover
+
+        FilteredCoverImage {
+            id: filteredCoverImage
+            anchors.fill: parent
         }
     }
 }

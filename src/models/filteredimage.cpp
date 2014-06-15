@@ -35,6 +35,8 @@
 
 #include "src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemoimagemetadata.h"
 
+#include <QDebug>
+
 static QImage rotate(const QImage &src,
                      NemoImageMetadata::Orientation orientation)
 {
@@ -118,6 +120,9 @@ void FilteredImage::setSource(const QString &source)
             m_image = rotate(m_image, meta.orientation());
         }
 
+        setContentsSize(m_image.size());
+        setWidth((qreal)m_image.width());
+        setHeight((qreal)m_image.height());
         emit sourceChanged(m_source);
     }
 }
@@ -136,6 +141,7 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     }
 
     update();
+    filterApplied(m_filteredImage);
 }
 
 void FilteredImage::reApplyFilter()
@@ -144,7 +150,9 @@ void FilteredImage::reApplyFilter()
     if(m_filter != 0)
     {
         m_filteredImage = m_filter->applyFilter(m_image);
+
         update();
+        filterApplied(m_filteredImage);
     }
 }
 
@@ -176,11 +184,11 @@ void FilteredImage::paint(QPainter *painter)
 
     if(m_filteredImage.isNull())
     {
-        scaled = m_image.scaled(width(),height(),Qt::KeepAspectRatio);
+        scaled = m_image.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
     }
     else
     {
-        scaled = m_filteredImage.scaled(width(),height(),Qt::KeepAspectRatio);
+        scaled = m_filteredImage.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
     }
 
     QRect rect = scaled.rect();

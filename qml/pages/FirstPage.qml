@@ -61,12 +61,12 @@ Page {
         ScrollDecorator {}
     }
 
-    onStatusChanged: {
-        if(status === PageStatus.Activating)
-        {
-            galleryModel.refresh();
-        }
-    }
+//    onStatusChanged: {
+//        if(status === PageStatus.Activating)
+//        {
+//            galleryModel.refresh();
+//        }
+//    }
 
 //    // To enable PullDownMenu, place our content in a SilicaFlickable
 //    SilicaFlickable {
