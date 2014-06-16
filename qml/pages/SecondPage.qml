@@ -34,6 +34,26 @@ Page {
     //allowedOrientations: Orientation.All
     property alias source: filteredImage.source
 
+    DockedPanel {
+        id: imageSavedPanel
+
+        property string filename
+
+        width: parent.width
+        //height: Theme.itemSizeExtraLarge + Theme.paddingLarge
+
+        dock: Dock.Bottom
+        open: false
+
+        Text {
+            x: Theme.paddingLarge
+            text: imageSavedPanel.filename + " saved"
+            color: Theme.primaryColor
+            font.pixelSize: Theme.fontSizeMedium
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+    }
+
     Drawer {
         id: drawer
         anchors.fill: parent
@@ -48,6 +68,9 @@ Page {
             PullDownMenu {
                 MenuItem {
                     text: "About"
+                    onClicked: {
+                        pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                    }
                 }
                 MenuItem {
                     text: "Save"
@@ -197,8 +220,9 @@ Page {
                         fitToScreen();
                     }
 
-                    onFilterApplied: {
-                        filteredCoverImage.image = filter;
+                    onImageSaved: {
+                        imageSavedPanel.filename = fileName;
+                        imageSavedPanel.show();
                     }
 
 //                    Component.onCompleted: {
@@ -238,10 +262,6 @@ Page {
         {
             mainWindow.cover = imgCover;
         }
-        else if(status === PageStatus.Inactive)
-        {
-            mainWindow.cover = Qt.resolvedUrl("cover/CoverPage.qml");
-        }
     }
 
     Component {
@@ -250,6 +270,7 @@ Page {
         FilteredCoverImage {
             id: filteredCoverImage
             anchors.fill: parent
+            image: filteredImage.image
         }
     }
 }

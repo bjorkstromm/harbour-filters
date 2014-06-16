@@ -33,6 +33,15 @@ Page {
     id: page
 
     SilicaGridView {
+        PullDownMenu {
+            MenuItem {
+                text: "About"
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("AboutPage.qml"))
+                }
+            }
+        }
+
         id: grid
         header: PageHeader { title: "Images" }
 
@@ -59,6 +68,13 @@ Page {
             }
         }
         ScrollDecorator {}
+    }
+
+    onStatusChanged: {
+        if(status === PageStatus.Active)
+        {
+            mainWindow.cover = Qt.resolvedUrl("../cover/CoverPage.qml");
+        }
     }
 
 //    onStatusChanged: {

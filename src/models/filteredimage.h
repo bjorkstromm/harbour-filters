@@ -36,23 +36,26 @@ class FilteredImage : public QQuickPaintedItem
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QImage image READ image NOTIFY imageChanged)
 public:
     explicit FilteredImage(QQuickItem *parent = 0);
 
     QString source() const;
     void setSource(const QString &source);
 
+    QImage image() const;
+
     Q_INVOKABLE void applyFilter(AbstractImageFilter *filter);
     Q_INVOKABLE void reApplyFilter();
     Q_INVOKABLE void applyCurrentFilter();
-
-    Q_INVOKABLE QVariant saveImage() const;
+    Q_INVOKABLE void saveImage();
 
     virtual void paint(QPainter *painter);
 
 signals:
     void sourceChanged(QString source);
-    void filterApplied(QImage filter);
+    void imageChanged(QImage image);
+    void imageSaved(QString fileName);
 
 public slots:
 

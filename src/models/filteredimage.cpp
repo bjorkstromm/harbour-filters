@@ -94,7 +94,7 @@ static QImage rotate(const QImage &src,
 FilteredImage::FilteredImage(QQuickItem *parent) :
     QQuickPaintedItem(parent)
 {
-    connect(this,SIGNAL(sourceChanged(QString)),SLOT(update()));
+    connect(this,SIGNAL(imageChanged(QImage)),SLOT(update()));
 }
 
 QString FilteredImage::source() const
@@ -123,8 +123,15 @@ void FilteredImage::setSource(const QString &source)
         setContentsSize(m_image.size());
         setWidth((qreal)m_image.width());
         setHeight((qreal)m_image.height());
+
         emit sourceChanged(m_source);
+        emit imageChanged(m_image);
     }
+}
+
+QImage FilteredImage::image() const
+{
+    return m_filteredImage.isNull() ? m_image : m_filteredImage;
 }
 
 void FilteredImage::applyFilter(AbstractImageFilter *filter)
@@ -140,8 +147,7 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
         m_filteredImage = m_image;
     }
 
-    update();
-    filterApplied(m_filteredImage);
+    emit imageChanged(m_filteredImage);
 }
 
 void FilteredImage::reApplyFilter()
@@ -151,18 +157,24 @@ void FilteredImage::reApplyFilter()
     {
         m_filteredImage = m_filter->applyFilter(m_image);
 
-        update();
-        filterApplied(m_filteredImage);
+        emit imageChanged(m_filteredImage);
     }
 }
 
 void FilteredImage::applyCurrentFilter()
 {
     m_image = m_filteredImage;
+
+    m_filteredImage = QImage();
 }
 
-QVariant FilteredImage::saveImage() const
+void FilteredImage::saveImage()
 {
+    if(!m_filteredImage.isNull())
+    {
+        applyCurrentFilter();
+    }
+
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
 
     if(!dir.cd("filters"))
@@ -175,7 +187,7 @@ QVariant FilteredImage::saveImage() const
 
     m_image.save(dir.absolutePath() + "/" + filename,"JPG");
 
-    return filename;
+    emit imageSaved(filename);
 }
 
 void FilteredImage::paint(QPainter *painter)

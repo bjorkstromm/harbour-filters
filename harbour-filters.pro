@@ -35,12 +35,13 @@ OTHER_FILES += qml/harbour-filters.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
     qml/pages/SecondPage.qml \
+    qml/images/icon.png \
     rpm/harbour-filters.changes.in \
     rpm/harbour-filters.spec \
     rpm/harbour-filters.yaml \
     translations/*.ts \
     harbour-filters.desktop \
-    qml/pages/ImagePage.qml
+    qml/pages/AboutPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
