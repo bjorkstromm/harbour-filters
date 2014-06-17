@@ -31,28 +31,7 @@ import harbour.filters 1.0
 
 Page {
     id: imagePage
-    //allowedOrientations: Orientation.All
     property alias source: filteredImage.source
-
-    DockedPanel {
-        id: imageSavedPanel
-
-        property string filename
-
-        width: parent.width
-        //height: Theme.itemSizeExtraLarge + Theme.paddingLarge
-
-        dock: Dock.Bottom
-        open: false
-
-        Text {
-            x: Theme.paddingLarge
-            text: imageSavedPanel.filename + " saved"
-            color: Theme.primaryColor
-            font.pixelSize: Theme.fontSizeMedium
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-    }
 
     Drawer {
         id: drawer
@@ -76,14 +55,9 @@ Page {
                     text: "Save"
                     onClicked: {
                         filteredImage.saveImage();
+                        filterComboBox.currentIndex = 0;
                     }
                 }
-//                MenuItem {
-//                    text: "Redo"
-//                }
-//                MenuItem {
-//                    text: "Undo"
-//                }
                 MenuItem {
                     text: "Apply"
                     enabled: filterComboBox.currentIndex !== 0
@@ -149,39 +123,19 @@ Page {
                         }
                     }
                 }
-
-//                Column {
-
-//                    Repeater {
-//                        id: filterParams
-//                        model: 0
-
-//                        delegate: Slider {
-//                            value: model.modelData.value
-//                            minimumValue: model.modelData.min
-//                            maximumValue: model.modelData.max
-//                            stepSize: 1
-//                            width: imagePage.width
-//                            valueText: model.modelData.value
-//                            label: model.modelData.name
-//                            onValueChanged: {
-//                                filteredImage.reApplyFilter();
-//                            }
-//                        }
-//                    }
-//                }
             }
 
             VerticalScrollDecorator {}
         }
 
+        /*
+            Tweetian for SailfishOS gave some hints on how to create a flickable and pinchable image.
+        */
         SilicaFlickable {
             id: flickable
             anchors.fill: parent
             contentWidth: container.width
             contentHeight: container.height
-//            contentWidth: filteredImage.contentsSize.width
-//            contentHeight: filteredImage.contentsSize.height
             clip: true
             interactive: !drawer.open
 
@@ -221,14 +175,8 @@ Page {
                     }
 
                     onImageSaved: {
-                        imageSavedPanel.filename = fileName;
-                        imageSavedPanel.show();
+                        savedMessageBox.show(fileName);
                     }
-
-//                    Component.onCompleted: {
-//                        filteredImage.width = flickable.width;
-//                        filteredImage.height = flickable.height;
-//                    }
                 }
             }
 
@@ -240,12 +188,7 @@ Page {
                 pinch.minimumScale: 1
                 pinch.maximumScale: 2
 
-                /*onPinchStarted: {
-                    console.debug("Started pinch...");
-                }*/
-
                 onPinchFinished: {
-                    //console.debug("Finished pinch...");
                     flickable.returnToBounds();
                 }
 
@@ -271,6 +214,39 @@ Page {
             id: filteredCoverImage
             anchors.fill: parent
             image: filteredImage.image
+        }
+    }
+
+    Rectangle
+    {
+        id: savedMessageBox
+        x: 0
+        y: 0
+        z: 999
+        width: parent.width
+        height: Theme.itemSizeSmall
+        color: Theme.highlightBackgroundColor
+
+        visible: false
+
+        function show(message)
+        {
+            savedMessageBoxText.text = message + " saved.";
+            savedMessageBox.visible = true;
+            savedMessageBoxVisibleTimer.restart();
+        }
+
+        Label
+        {
+            id: savedMessageBoxText
+            anchors.centerIn: parent
+        }
+
+        Timer
+        {
+            id: savedMessageBoxVisibleTimer
+            interval: 3000
+            onTriggered: savedMessageBox.visible = false
         }
     }
 }

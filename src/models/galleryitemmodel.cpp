@@ -39,6 +39,9 @@ GalleryItemModel::GalleryItemModel(QObject *parent) :
     connect(timer,SIGNAL(timeout()),SLOT(refresh()));
 
     timer->start(2500);
+
+    // First refresh so we don't have to wait 2500ms
+    refresh();
 }
 
 int GalleryItemModel::rowCount(const QModelIndex &parent) const

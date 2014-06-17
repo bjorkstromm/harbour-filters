@@ -12,12 +12,12 @@ Name:       harbour-filters
 %{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
-Summary:    Filter
+Summary:    Filters
 Version:    0.1
 Release:    1
 Group:      Qt/Qt
-License:    LICENSE
-URL:        http://example.org/
+License:    BSD
+URL:        https://github.com/mholo65/harbour-filters
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-filters.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -28,7 +28,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
 
 %description
-Short description of my SailfishOS Application
+Simple filter application for SailfishOS
 
 
 %prep

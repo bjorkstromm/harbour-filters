@@ -163,17 +163,17 @@ void FilteredImage::reApplyFilter()
 
 void FilteredImage::applyCurrentFilter()
 {
-    m_image = m_filteredImage;
+    if(!m_filteredImage.isNull())
+    {
+        m_image = m_filteredImage;
 
-    m_filteredImage = QImage();
+        m_filteredImage = QImage();
+    }
 }
 
 void FilteredImage::saveImage()
 {
-    if(!m_filteredImage.isNull())
-    {
-        applyCurrentFilter();
-    }
+    applyCurrentFilter();
 
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation));
 
