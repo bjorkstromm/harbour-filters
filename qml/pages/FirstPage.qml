@@ -32,6 +32,8 @@ import harbour.filters 1.0
 Page {
     id: page
 
+    property bool active: Qt.application.active;
+
     SilicaGridView {
         PullDownMenu {
             MenuItem {
@@ -74,8 +76,18 @@ Page {
         if(status === PageStatus.Active)
         {
             mainWindow.cover = Qt.resolvedUrl("../cover/CoverPage.qml");
+            galleryModel.refresh();
+        }
+    }
+
+    onActiveChanged: {
+        if(active === true)
+        {
+            galleryModel.refresh();
         }
     }
 }
+
+
 
 

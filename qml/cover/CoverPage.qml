@@ -38,7 +38,7 @@ CoverBackground {
         anchors.fill: parent
 
         model: GalleryModel {
-
+            id: galleryModel
         }
 
         delegate: Image {
@@ -48,7 +48,17 @@ CoverBackground {
             sourceSize.width: grid.cellWidth
             sourceSize.height: grid.cellHeight
 
+            width: grid.cellWidth
+            height: grid.cellHeight
+
             fillMode: Image.PreserveAspectCrop
+        }
+    }
+
+    onStatusChanged: {
+        if(status === Cover.Active)
+        {
+            galleryModel.refresh();
         }
     }
 }

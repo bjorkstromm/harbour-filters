@@ -34,13 +34,6 @@
 GalleryItemModel::GalleryItemModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    QTimer *timer = new QTimer(this);
-
-    connect(timer,SIGNAL(timeout()),SLOT(refresh()));
-
-    timer->start(2500);
-
-    // First refresh so we don't have to wait 2500ms
     refresh();
 }
 
