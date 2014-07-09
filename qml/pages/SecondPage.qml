@@ -28,15 +28,18 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import harbour.filters 1.0
+import "../components"
 
 Page {
     id: imagePage
+    allowedOrientations: Orientation.All
+
     property alias source: filteredImage.source
 
     Drawer {
         id: drawer
         anchors.fill: parent
-
+        dock: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted ? Dock.Top : Dock.Right)
         open: false
 
         background: SilicaListView {
@@ -69,7 +72,7 @@ Page {
             }
 
             model: VisualItemModel {
-                ComboBox {
+                ComboBoxExt {
                     id: filterComboBox
                     width: imagePage.width
                     label: "Filter"
@@ -109,7 +112,7 @@ Page {
                             minimumValue: model.min
                             maximumValue: model.max
                             stepSize: 1
-                            width: imagePage.width
+                            width: parent.width
                             valueText: sliderValue
                             label: model.name
 
@@ -138,6 +141,14 @@ Page {
             contentHeight: container.height
             clip: true
             interactive: !drawer.open
+
+            onHeightChanged: {
+                filteredImage.fitToScreen();
+            }
+
+            onWidthChanged: {
+                filteredImage.fitToScreen();
+            }
 
             Item {
                 id: container

@@ -38,7 +38,7 @@ QString BlurFilter::name() const
     return "Blur";
 }
 
-QImage BlurFilter::applyFilter(const QImage &origin) const
+void BlurFilter::applyFilter(const QImage &origin)
 {
     QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 
@@ -76,5 +76,6 @@ QImage BlurFilter::applyFilter(const QImage &origin) const
 
         }
     }
-    return newImage;
+
+    emit filterApplied(newImage);
 }

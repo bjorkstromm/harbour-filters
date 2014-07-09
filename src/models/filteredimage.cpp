@@ -136,28 +136,31 @@ QImage FilteredImage::image() const
 
 void FilteredImage::applyFilter(AbstractImageFilter *filter)
 {
+    if(m_filter != 0)
+    {
+        disconnect(m_filter,0,this,0);
+    }
+
     m_filter = filter;
 
     if(m_filter != 0)
     {
-        m_filteredImage = filter->applyFilter(m_image);
+        connect(m_filter,SIGNAL(filterApplied(QImage)),this,SLOT(filterApplied(QImage)));
+        filter->applyFilter(m_image);
     }
     else
     {
         m_filteredImage = m_image;
-    }
 
-    emit imageChanged(m_filteredImage);
+        emit imageChanged(m_filteredImage);
+    }
 }
 
 void FilteredImage::reApplyFilter()
 {
-
     if(m_filter != 0)
     {
-        m_filteredImage = m_filter->applyFilter(m_image);
-
-        emit imageChanged(m_filteredImage);
+        m_filter->applyFilter(m_image);
     }
 }
 
@@ -207,6 +210,13 @@ void FilteredImage::paint(QPainter *painter)
     rect.moveCenter(boundingRect().toAlignedRect().center());
 
     painter->drawImage(rect,scaled);
+}
+
+void FilteredImage::filterApplied(const QImage &image)
+{
+    m_filteredImage = image;
+
+    emit imageChanged(m_filteredImage);
 }
 
 

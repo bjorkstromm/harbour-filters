@@ -31,6 +31,7 @@ import harbour.filters 1.0
 
 Page {
     id: page
+    allowedOrientations: Orientation.All
 
     property bool active: Qt.application.active;
 
@@ -47,8 +48,8 @@ Page {
         id: grid
         header: PageHeader { title: "Images" }
 
-        cellWidth: width / 3
-        cellHeight: width / 3
+        cellWidth: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted  ? width / 3 : width / 5)
+        cellHeight: (orientation === Orientation.Portrait || orientation === Orientation.PortraitInverted ? width / 3 : width / 5)
 
         anchors.fill: parent
 

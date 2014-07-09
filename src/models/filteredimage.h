@@ -59,6 +59,9 @@ signals:
 
 public slots:
 
+private slots:
+    void filterApplied(const QImage &image);
+
 private:
     AbstractImageFilter* m_filter;
     QImage m_filteredImage;

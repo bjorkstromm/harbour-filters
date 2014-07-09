@@ -36,7 +36,7 @@ public:
     explicit BlurFilter(QObject *parent = 0);
 
     QString name() const;
-    QImage applyFilter(const QImage &origin) const;
+    void applyFilter(const QImage &origin);
 
 signals:
 

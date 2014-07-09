@@ -48,7 +48,7 @@ QList<ImageFilterParameter *> BrightnessFilter::parameterList()
     return m_params;
 }
 
-QImage BrightnessFilter::applyFilter(const QImage &origin) const
+void BrightnessFilter::applyFilter(const QImage &origin)
 {
     int contrastLookup[256];
     qreal contrast = (m_params[1]->value() + 100) / 100.0;
@@ -76,5 +76,5 @@ QImage BrightnessFilter::applyFilter(const QImage &origin) const
         }
     }
 
-    return newImage;
+    emit filterApplied(newImage);
 }

@@ -30,6 +30,7 @@ import Sailfish.Silica 1.0
 Page
 {
     id: aboutPage
+    allowedOrientations: Orientation.All
 
     SilicaFlickable
     {
@@ -85,7 +86,7 @@ Page
             Label
             {
                 x: Theme.paddingLarge
-                text: qsTr("Version: 0.1")
+                text: qsTr("Version: 0.2")
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter

@@ -36,7 +36,7 @@ QString GreyscaleFilter::name() const
     return "Greyscale";
 }
 
-QImage GreyscaleFilter::applyFilter(const QImage &origin) const
+void GreyscaleFilter::applyFilter(const QImage &origin)
 {
     QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 
@@ -51,5 +51,5 @@ QImage GreyscaleFilter::applyFilter(const QImage &origin) const
         }
     }
 
-    return newImage;
+    emit filterApplied(newImage);
 }

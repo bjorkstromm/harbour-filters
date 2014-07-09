@@ -30,9 +30,11 @@
 #include "src/filters/sepiafilter.h"
 #include "src/filters/greyscalefilter.h"
 #include "src/filters/brightnessfilter.h"
-//#include "src/filters/blurfilter.h"
-//#include "src/filters/sharpenfilter.h"
+#include "src/filters/blurfilter.h"
+#include "src/filters/sharpenfilter.h"
 #include "src/filters/rgbfilter.h"
+#include "src/filters/negativefilter.h"
+#include "src/filters/rgbswapfilter.h"
 
 FilterListModel::FilterListModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -42,7 +44,9 @@ FilterListModel::FilterListModel(QObject *parent) :
               << new BrightnessFilter(this)
               //<< new BlurFilter(this)
               //<< new SharpenFilter(this)
-              << new RGBFilter(this);
+              << new RGBFilter(this)
+              << new NegativeFilter(this)
+              << new RGBSwapFilter(this);
 }
 
 int FilterListModel::rowCount(const QModelIndex &parent) const

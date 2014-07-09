@@ -38,7 +38,7 @@ QString SharpenFilter::name() const
     return "Sharpen";
 }
 
-QImage SharpenFilter::applyFilter(const QImage &origin) const
+void SharpenFilter::applyFilter(const QImage &origin)
 {
     QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 
@@ -74,5 +74,6 @@ QImage SharpenFilter::applyFilter(const QImage &origin) const
 
            }
        }
-       return newImage;
+
+       emit filterApplied(newImage);
 }

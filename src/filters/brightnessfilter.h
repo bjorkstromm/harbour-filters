@@ -37,7 +37,7 @@ public:
 
     QString name() const;
     QList<ImageFilterParameter *> parameterList();
-    QImage applyFilter(const QImage &origin) const;
+    void applyFilter(const QImage &origin);
 
 signals:
 

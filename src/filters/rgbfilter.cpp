@@ -50,7 +50,7 @@ QList<ImageFilterParameter *> RGBFilter::parameterList()
     return m_params;
 }
 
-QImage RGBFilter::applyFilter(const QImage &origin) const
+void RGBFilter::applyFilter(const QImage &origin)
 {
     int red = m_params[0]->value();
     int green = m_params[1]->value();
@@ -72,5 +72,5 @@ QImage RGBFilter::applyFilter(const QImage &origin) const
         }
     }
 
-    return newImage;
+    emit filterApplied(newImage);
 }

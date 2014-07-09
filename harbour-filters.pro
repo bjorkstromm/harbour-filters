@@ -29,7 +29,9 @@ SOURCES += src/harbour-filters.cpp \
     src/filters/imagefilterparameter.cpp \
     src/models/filterparameterlistmodel.cpp \
     src/filters/rgbfilter.cpp \
-    src/models/filteredcoverimage.cpp
+    src/models/filteredcoverimage.cpp \
+    src/filters/negativefilter.cpp \
+    src/filters/rgbswapfilter.cpp
 
 OTHER_FILES += qml/harbour-filters.qml \
     qml/cover/CoverPage.qml \
@@ -41,7 +43,8 @@ OTHER_FILES += qml/harbour-filters.qml \
     rpm/harbour-filters.yaml \
     translations/*.ts \
     harbour-filters.desktop \
-    qml/pages/AboutPage.qml
+    qml/pages/AboutPage.qml \
+    qml/components/ComboBoxExt.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -63,5 +66,7 @@ HEADERS += \
     src/filters/imagefilterparameter.h \
     src/models/filterparameterlistmodel.h \
     src/filters/rgbfilter.h \
-    src/models/filteredcoverimage.h
+    src/models/filteredcoverimage.h \
+    src/filters/negativefilter.h \
+    src/filters/rgbswapfilter.h
 

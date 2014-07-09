@@ -42,10 +42,11 @@ public:
     virtual QString name() const = 0;
     virtual QList<ImageFilterParameter *> parameterList();
 
-    virtual QImage applyFilter(const QImage &origin) const = 0;
+    virtual void applyFilter(const QImage &origin) = 0;
 
 signals:
     void nameChanged(QString);
+    void filterApplied(const QImage &image);
 
 public slots:
 

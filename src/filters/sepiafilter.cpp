@@ -36,7 +36,7 @@ QString SepiaFilter::name() const
     return "Sepia";
 }
 
-QImage SepiaFilter::applyFilter(const QImage &origin) const
+void SepiaFilter::applyFilter(const QImage &origin)
 {
     QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 
@@ -54,5 +54,5 @@ QImage SepiaFilter::applyFilter(const QImage &origin) const
         }
     }
 
-    return newImage;
+    emit filterApplied(newImage);
 }
