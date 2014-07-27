@@ -33,7 +33,7 @@ GreyscaleFilter::GreyscaleFilter(QObject *parent) :
 
 QString GreyscaleFilter::name() const
 {
-    return "Greyscale";
+    return QLatin1String("Greyscale");
 }
 
 void GreyscaleFilter::applyFilter(const QImage &origin)

@@ -31,7 +31,8 @@ SOURCES += src/harbour-filters.cpp \
     src/filters/rgbfilter.cpp \
     src/models/filteredcoverimage.cpp \
     src/filters/negativefilter.cpp \
-    src/filters/rgbswapfilter.cpp
+    src/filters/rgbswapfilter.cpp \
+    src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemothumbnailitem.cpp
 
 OTHER_FILES += qml/harbour-filters.qml \
     qml/cover/CoverPage.qml \
@@ -68,5 +69,7 @@ HEADERS += \
     src/filters/rgbfilter.h \
     src/models/filteredcoverimage.h \
     src/filters/negativefilter.h \
-    src/filters/rgbswapfilter.h
+    src/filters/rgbswapfilter.h \
+    src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemothumbnailitem.h \
+    src/3rdparty/nemo-qml-plugin-thumbnailer/src/linkedlist.h
 

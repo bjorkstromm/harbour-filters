@@ -42,7 +42,7 @@ RGBFilter::RGBFilter(QObject *parent) :
 
 QString RGBFilter::name() const
 {
-    return "RGB";
+    return QLatin1String("RGB");
 }
 
 QList<ImageFilterParameter *> RGBFilter::parameterList()

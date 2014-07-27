@@ -33,7 +33,7 @@
 #include "nemothumbnailitem.h"
 
 #include "nemothumbnailprovider.h"
-#include "nemovideothumbnailer.h"
+//#include "nemovideothumbnailer.h"
 
 #include "linkedlist.h"
 
@@ -532,9 +532,7 @@ void NemoThumbnailLoader::run()
                 lists[request->priority]->append(request);
             }
         } else {
-            QImage image = !mimeType.startsWith(QLatin1String("video/"), Qt::CaseInsensitive)
-                    ? NemoThumbnailProvider::generateThumbnail(fileName, cacheKey, requestedSize, crop)
-                    : NemoVideoThumbnailer::generateThumbnail(fileName, cacheKey, requestedSize, crop);
+            QImage image = NemoThumbnailProvider::generateThumbnail(fileName, cacheKey, requestedSize, crop);
 
             locker.relock();
             request->loading = false;

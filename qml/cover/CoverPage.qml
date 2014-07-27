@@ -28,6 +28,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import harbour.filters 1.0
+import harbour.filters.nemoThumbnail 1.0
 
 CoverBackground {
     SilicaGridView {
@@ -41,18 +42,30 @@ CoverBackground {
             id: galleryModel
         }
 
-        delegate: Image {
-            asynchronous: true
-            // From org.nemomobile.thumbnailer
-            source:  "image://nemoThumbnail/" + url
-            sourceSize.width: grid.cellWidth
-            sourceSize.height: grid.cellHeight
-
-            width: grid.cellWidth
+        delegate: Thumbnail {
+            id: image
+            source: model.url
             height: grid.cellHeight
+            width: grid.cellWidth
+            sourceSize.height: grid.cellHeight
+            sourceSize.width: grid.cellWidth
+            clip: true
+            smooth: true
 
             fillMode: Image.PreserveAspectCrop
         }
+//        Image {
+//            asynchronous: true
+//            // From org.nemomobile.thumbnailer
+//            source:  "image://nemoThumbnail/" + url
+//            sourceSize.width: grid.cellWidth
+//            sourceSize.height: grid.cellHeight
+
+//            width: grid.cellWidth
+//            height: grid.cellHeight
+
+//            fillMode: Image.PreserveAspectCrop
+//        }
     }
 
     onStatusChanged: {

@@ -35,7 +35,7 @@ SharpenFilter::SharpenFilter(QObject *parent) :
 
 QString SharpenFilter::name() const
 {
-    return "Sharpen";
+    return QLatin1String("Sharpen");
 }
 
 void SharpenFilter::applyFilter(const QImage &origin)

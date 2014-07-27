@@ -7,7 +7,7 @@ NegativeFilter::NegativeFilter(QObject *parent) :
 
 QString NegativeFilter::name() const
 {
-    return "Negative";
+    return QLatin1String("Negative");
 }
 
 void NegativeFilter::applyFilter(const QImage &origin)

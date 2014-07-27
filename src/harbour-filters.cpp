@@ -45,20 +45,27 @@
 #include "src/models/filterparameterlistmodel.h"
 
 #include "src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemothumbnailprovider.h"
+#include "src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemothumbnailitem.h"
 
 int main(int argc, char *argv[])
 {
-    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc,argv));
-
     qmlRegisterType<GalleryItemModel>("harbour.filters", 1, 0, "GalleryModel");
     qmlRegisterType<FilteredImage>("harbour.filters", 1, 0, "FilteredImage");
     qmlRegisterType<FilteredCoverImage>("harbour.filters", 1, 0, "FilteredCoverImage");
     qmlRegisterType<FilterListModel>("harbour.filters", 1, 0, "FilterListModel");
     qmlRegisterType<FilterParameterListModel>("harbour.filters", 1, 0, "FilterParameterListModel");
+    qmlRegisterType<NemoThumbnailItem>("harbour.filters.nemoThumbnail", 1, 0, "Thumbnail");
 
+    QScopedPointer<QGuiApplication> app(SailfishApp::application(argc,argv));
     QScopedPointer<QQuickView> view(SailfishApp::createView());
 
     view->engine()->addImageProvider(QLatin1String("nemoThumbnail"), new NemoThumbnailProvider);
+
+    if (!NemoThumbnailLoader::instance) {
+        NemoThumbnailLoader *loader = new NemoThumbnailLoader;
+        loader->start(QThread::IdlePriority);
+        qAddPostRoutine(NemoThumbnailLoader::shutdown);
+    }
 
     view->setSource(SailfishApp::pathTo("qml/harbour-filters.qml"));
 

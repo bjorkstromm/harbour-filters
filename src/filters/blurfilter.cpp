@@ -35,7 +35,7 @@ BlurFilter::BlurFilter(QObject *parent) :
 
 QString BlurFilter::name() const
 {
-    return "Blur";
+    return QLatin1String("Blur");
 }
 
 void BlurFilter::applyFilter(const QImage &origin)

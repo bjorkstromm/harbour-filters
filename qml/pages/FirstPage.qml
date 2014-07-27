@@ -28,6 +28,7 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 import harbour.filters 1.0
+import harbour.filters.nemoThumbnail 1.0
 
 Page {
     id: page
@@ -57,7 +58,23 @@ Page {
             id: galleryModel
         }
 
-        delegate: Image {
+        delegate: Thumbnail {
+            id: image
+            source: model.url
+            height: grid.cellHeight
+            width: grid.cellWidth
+            sourceSize.height: grid.cellHeight
+            sourceSize.width: grid.cellWidth
+            clip: true
+            smooth: true
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"),
+                                          {source: url} )
+            }
+
+        } /*Image {
             asynchronous: true
             // From org.nemomobile.thumbnailer
             source:  "image://nemoThumbnail/" + url
@@ -69,7 +86,7 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"),
                                           {source: url} )
             }
-        }
+        }*/
         ScrollDecorator {}
     }
 

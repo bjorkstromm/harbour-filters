@@ -7,7 +7,7 @@ RGBSwapFilter::RGBSwapFilter(QObject *parent) :
 
 QString RGBSwapFilter::name() const
 {
-    return "RGB swap";
+    return QLatin1String("RGB swap");
 }
 
 void RGBSwapFilter::applyFilter(const QImage &origin)

@@ -40,7 +40,7 @@ BrightnessFilter::BrightnessFilter(QObject *parent) :
 
 QString BrightnessFilter::name() const
 {
-    return "Brightness";
+    return QLatin1String("Brightness");
 }
 
 QList<ImageFilterParameter *> BrightnessFilter::parameterList()

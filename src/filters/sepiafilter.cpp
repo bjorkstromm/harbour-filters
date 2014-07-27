@@ -33,7 +33,7 @@ SepiaFilter::SepiaFilter(QObject *parent) :
 
 QString SepiaFilter::name() const
 {
-    return "Sepia";
+    return QLatin1String("Sepia");
 }
 
 void SepiaFilter::applyFilter(const QImage &origin)
