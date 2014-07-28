@@ -27,12 +27,12 @@
 #ifndef FILTEREDIMAGE_H
 #define FILTEREDIMAGE_H
 
-#include <QQuickPaintedItem>
+#include <QQuickItem>
 #include <QImage>
 
 class AbstractImageFilter;
 
-class FilteredImage : public QQuickPaintedItem
+class FilteredImage : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
@@ -50,7 +50,8 @@ public:
     Q_INVOKABLE void applyCurrentFilter();
     Q_INVOKABLE void saveImage();
 
-    virtual void paint(QPainter *painter);
+    //virtual void paint(QPainter *painter);
+    QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *);
 
 signals:
     void sourceChanged(QString source);
@@ -67,6 +68,7 @@ private:
     QImage m_filteredImage;
     QImage m_image;
     QString m_source;
+    bool m_imageChanged;
 };
 
 #endif // FILTEREDIMAGE_H

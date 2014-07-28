@@ -31,11 +31,13 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDateTime>
+#include <QSGGeometryNode>
+#include <QSGTextureMaterial>
+#include <QQuickWindow>
+
 #include "src/filters/abstractimagefilter.h"
 
 #include "src/3rdparty/nemo-qml-plugin-thumbnailer/src/nemoimagemetadata.h"
-
-#include <QDebug>
 
 static QImage rotate(const QImage &src,
                      NemoImageMetadata::Orientation orientation)
@@ -91,9 +93,33 @@ static QImage rotate(const QImage &src,
     return dst;
 }
 
-FilteredImage::FilteredImage(QQuickItem *parent) :
-    QQuickPaintedItem(parent)
+class FilteredImageNode : public QSGGeometryNode
 {
+public:
+    FilteredImageNode();
+    ~FilteredImageNode();
+
+    QSGGeometry geometry;
+    QSGTextureMaterial material;
+};
+
+FilteredImageNode::FilteredImageNode()
+    : geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
+{
+    setGeometry(&geometry);
+    setMaterial(&material);
+}
+
+FilteredImageNode::~FilteredImageNode()
+{
+    delete material.texture();
+}
+
+FilteredImage::FilteredImage(QQuickItem *parent) :
+    QQuickItem(parent)
+{
+    setFlag(QQuickItem::ItemHasContents, true);
+
     connect(this,SIGNAL(imageChanged(QImage)),SLOT(update()));
 }
 
@@ -120,10 +146,11 @@ void FilteredImage::setSource(const QString &source)
             m_image = rotate(m_image, meta.orientation());
         }
 
-        setContentsSize(m_image.size());
+        //setContentsSize(m_image.size());
         setWidth((qreal)m_image.width());
         setHeight((qreal)m_image.height());
 
+        m_imageChanged = true;
         emit sourceChanged(m_source);
         emit imageChanged(m_image);
     }
@@ -152,6 +179,7 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     {
         m_filteredImage = m_image;
 
+        m_imageChanged = true;
         emit imageChanged(m_filteredImage);
     }
 }
@@ -193,29 +221,79 @@ void FilteredImage::saveImage()
     emit imageSaved(filename);
 }
 
-void FilteredImage::paint(QPainter *painter)
-{   
-    QImage scaled;
+//void FilteredImage::paint(QPainter *painter)
+//{
+//    QImage scaled;
 
-    if(m_filteredImage.isNull())
+//    if(m_filteredImage.isNull())
+//    {
+//        scaled = m_image.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+//    }
+//    else
+//    {
+//        scaled = m_filteredImage.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+//    }
+
+//    QRect rect = scaled.rect();
+//    rect.moveCenter(boundingRect().toAlignedRect().center());
+
+//    painter->drawImage(rect,scaled);
+//}
+
+QSGNode *FilteredImage::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
+{
+    FilteredImageNode *node = static_cast<FilteredImageNode*>(oldNode);
+    QImage *image;
+
+    if (m_filteredImage.isNull())
     {
-        scaled = m_image.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+        if(m_image.isNull())
+        {
+            delete node;
+            return 0;
+        }
+        else
+        {
+            image = &m_image;
+        }
     }
     else
     {
-        scaled = m_filteredImage.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
+        image = &m_filteredImage;
     }
 
-    QRect rect = scaled.rect();
-    rect.moveCenter(boundingRect().toAlignedRect().center());
+    if (node == 0)
+    {
+        node = new FilteredImageNode;
+    }
 
-    painter->drawImage(rect,scaled);
+
+    if (m_imageChanged || !node->material.texture())
+    {
+        m_imageChanged = false;
+        delete node->material.texture();
+        node->material.setTexture(window()->createTextureFromImage(*image));
+        node->markDirty(QSGNode::DirtyMaterial);
+    }
+
+    QRectF rect(QPointF(0, 0),
+                image->size().scaled(width(),height(),Qt::KeepAspectRatio));
+
+    rect.moveCenter(QPointF(width() / 2, height() / 2));
+
+    QSGGeometry::updateTexturedRectGeometry(&node->geometry, rect,
+                                            node->material.texture()->normalizedTextureSubRect());
+
+    node->markDirty(QSGNode::DirtyGeometry);
+
+    return node;
 }
 
 void FilteredImage::filterApplied(const QImage &image)
 {
     m_filteredImage = image;
 
+    m_imageChanged = true;
     emit imageChanged(m_filteredImage);
 }
 

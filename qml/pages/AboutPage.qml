@@ -86,7 +86,7 @@ Page
             Label
             {
                 x: Theme.paddingLarge
-                text: qsTr("Version: 0.2")
+                text: qsTr("Version: 0.3")
                 color: Theme.primaryColor
                 font.pixelSize: Theme.fontSizeMedium
                 anchors.horizontalCenter: parent.horizontalCenter
