@@ -31,8 +31,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDateTime>
-#include <QSGGeometryNode>
-#include <QSGTextureMaterial>
+#include <QSGSimpleTextureNode>
 #include <QQuickWindow>
 
 #include "src/filters/abstractimagefilter.h"
@@ -93,28 +92,6 @@ static QImage rotate(const QImage &src,
     return dst;
 }
 
-class FilteredImageNode : public QSGGeometryNode
-{
-public:
-    FilteredImageNode();
-    ~FilteredImageNode();
-
-    QSGGeometry geometry;
-    QSGTextureMaterial material;
-};
-
-FilteredImageNode::FilteredImageNode()
-    : geometry(QSGGeometry::defaultAttributes_TexturedPoint2D(), 4)
-{
-    setGeometry(&geometry);
-    setMaterial(&material);
-}
-
-FilteredImageNode::~FilteredImageNode()
-{
-    delete material.texture();
-}
-
 FilteredImage::FilteredImage(QQuickItem *parent) :
     QQuickItem(parent)
 {
@@ -147,8 +124,10 @@ void FilteredImage::setSource(const QString &source)
         }
 
         //setContentsSize(m_image.size());
-        setWidth((qreal)m_image.width());
-        setHeight((qreal)m_image.height());
+        setImplicitWidth((qreal)m_image.width());
+        setImplicitHeight((qreal)m_image.height());
+        //setWidth((qreal)m_image.width());
+        //setHeight((qreal)m_image.height());
 
         m_imageChanged = true;
         emit sourceChanged(m_source);
@@ -242,47 +221,34 @@ void FilteredImage::saveImage()
 
 QSGNode *FilteredImage::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    FilteredImageNode *node = static_cast<FilteredImageNode*>(oldNode);
-    QImage *image;
+    QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode*>(oldNode);
+    QImage *image = !m_filteredImage.isNull() ? &m_filteredImage : &m_image;
 
-    if (m_filteredImage.isNull())
+    if(image->isNull())
     {
-        if(m_image.isNull())
-        {
-            delete node;
-            return 0;
-        }
-        else
-        {
-            image = &m_image;
-        }
-    }
-    else
-    {
-        image = &m_filteredImage;
+        delete node;
+        return 0;
     }
 
-    if (node == 0)
+    if (!node)
     {
-        node = new FilteredImageNode;
+        node = new QSGSimpleTextureNode();
     }
 
-
-    if (m_imageChanged || !node->material.texture())
+    if (m_imageChanged || !node->texture())
     {
         m_imageChanged = false;
-        delete node->material.texture();
-        node->material.setTexture(window()->createTextureFromImage(*image));
+        delete node->texture();
+
+        node->setTexture(window()->createTextureFromImage(*image));
+        node->setFiltering(QSGTexture::Nearest);
+
         node->markDirty(QSGNode::DirtyMaterial);
     }
 
-    QRectF rect(QPointF(0, 0),
-                image->size().scaled(width(),height(),Qt::KeepAspectRatio));
-
-    rect.moveCenter(QPointF(width() / 2, height() / 2));
-
-    QSGGeometry::updateTexturedRectGeometry(&node->geometry, rect,
-                                            node->material.texture()->normalizedTextureSubRect());
+    QRectF rect = QRectF(QPoint(0,0),image->size().scaled(width(),height(),Qt::KeepAspectRatio));
+    rect.moveCenter(QPointF(width()/2,height()/2));
+    node->setRect(rect);
 
     node->markDirty(QSGNode::DirtyGeometry);
 

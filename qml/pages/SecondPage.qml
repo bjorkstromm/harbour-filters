@@ -162,6 +162,7 @@ Page {
 
                     anchors.centerIn: parent
                     smooth: !flickable.moving
+                    antialiasing: true
 
                     function fitToScreen() {
                         scale = Math.min(flickable.width / width, flickable.height / height, 1)
@@ -205,7 +206,12 @@ Page {
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: drawer.open = !drawer.open
+                    onClicked: {
+                        if(filteredImage.scale === pinchArea.pinch.minimumScale)
+                        {
+                            drawer.open = !drawer.open
+                        }
+                    }
                 }
             }
         }
