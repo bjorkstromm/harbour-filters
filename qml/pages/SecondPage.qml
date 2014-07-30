@@ -198,7 +198,7 @@ Page {
                 enabled: !drawer.open
                 pinch.target: filteredImage
                 pinch.minimumScale: 1
-                pinch.maximumScale: 2
+                pinch.maximumScale: 1
 
                 onPinchFinished: {
                     flickable.returnToBounds();

@@ -152,6 +152,7 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     if(m_filter != 0)
     {
         connect(m_filter,SIGNAL(filterApplied(QImage)),this,SLOT(filterApplied(QImage)));
+
         filter->applyFilter(m_image);
     }
     else
@@ -241,16 +242,14 @@ QSGNode *FilteredImage::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         delete node->texture();
 
         node->setTexture(window()->createTextureFromImage(*image));
-        node->setFiltering(QSGTexture::Nearest);
+//        node->setFiltering(QSGTexture::Linear);
+//        node->texture()->setMipmapFiltering(QSGTexture::Linear);
+//        node->texture()->bind();
 
-        node->markDirty(QSGNode::DirtyMaterial);
+        node->setRect(0,0,implicitWidth(),implicitHeight());
+
+        node->markDirty(QSGNode::DirtyMaterial | QSGNode::DirtyGeometry);
     }
-
-    QRectF rect = QRectF(QPoint(0,0),image->size().scaled(width(),height(),Qt::KeepAspectRatio));
-    rect.moveCenter(QPointF(width()/2,height()/2));
-    node->setRect(rect);
-
-    node->markDirty(QSGNode::DirtyGeometry);
 
     return node;
 }

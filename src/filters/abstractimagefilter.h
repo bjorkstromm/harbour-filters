@@ -42,7 +42,7 @@ public:
     virtual QString name() const = 0;
     virtual QList<ImageFilterParameter *> parameterList();
 
-    virtual void applyFilter(const QImage &origin) = 0;
+    Q_INVOKABLE virtual void applyFilter(const QImage &origin) = 0;
 
 signals:
     void nameChanged(QString);

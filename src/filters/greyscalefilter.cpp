@@ -26,9 +26,41 @@
 
 #include "greyscalefilter.h"
 
+class Worker : public QObject
+{
+    Q_OBJECT
+
+public slots:
+    void doWork(const QImage &origin) {
+        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+
+        QRgb * line;
+
+        for(int y = 0; y<newImage.height(); y++){
+            line = (QRgb *)origin.scanLine(y);
+
+            for(int x = 0; x<newImage.width(); x++){
+                int average = (qRed(line[x]) + qGreen(line[x]) + qRed(line[x]))/3;
+                newImage.setPixel(x,y, qRgb(average, average, average));
+            }
+        }
+
+        emit resultReady(newImage);
+    }
+
+signals:
+    void resultReady(const QImage &image);
+};
+
 GreyscaleFilter::GreyscaleFilter(QObject *parent) :
     AbstractImageFilter(parent)
 {
+}
+
+GreyscaleFilter::~GreyscaleFilter()
+{
+    workerThread.quit();
+    workerThread.wait();
 }
 
 QString GreyscaleFilter::name() const
@@ -38,18 +70,22 @@ QString GreyscaleFilter::name() const
 
 void GreyscaleFilter::applyFilter(const QImage &origin)
 {
-    QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+    Worker *worker = new Worker;
+    worker->moveToThread(&workerThread);
 
-    QRgb * line;
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    //connect(&workerThread, &QThread::started, worker, &Worker::doWork);
+    connect(worker, &Worker::resultReady, this, &GreyscaleFilter::handleResults);
 
-    for(int y = 0; y<newImage.height(); y++){
-        line = (QRgb *)origin.scanLine(y);
+    workerThread.start();
 
-        for(int x = 0; x<newImage.width(); x++){
-            int average = (qRed(line[x]) + qGreen(line[x]) + qRed(line[x]))/3;
-            newImage.setPixel(x,y, qRgb(average, average, average));
-        }
-    }
-
-    emit filterApplied(newImage);
+    QMetaObject::invokeMethod(worker,"doWork",Qt::QueuedConnection,Q_ARG(QImage, origin));
+    //worker->doWork(origin);
 }
+
+void GreyscaleFilter::handleResults(const QImage &image)
+{
+    emit filterApplied(image);
+}
+
+#include "greyscalefilter.moc"
