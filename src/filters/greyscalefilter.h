@@ -36,18 +36,11 @@ class GreyscaleFilter : public AbstractImageFilter
     Q_OBJECT
 public:
     explicit GreyscaleFilter(QObject *parent = 0);
-    ~GreyscaleFilter();
-
     QString name() const;
-    void applyFilter(const QImage &origin);
 
-signals:
+protected:
+    AbstractImageFilterWorker *createWorker();
 
-private slots:
-    void handleResults(const QImage &image);
-
-private:
-    QThread workerThread;
 };
 
 #endif // GREYSCALEFILTER_H

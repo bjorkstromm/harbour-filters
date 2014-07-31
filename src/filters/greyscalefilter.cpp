@@ -26,11 +26,8 @@
 
 #include "greyscalefilter.h"
 
-class Worker : public QObject
+class GreyscaleFilterWorker : public AbstractImageFilterWorker
 {
-    Q_OBJECT
-
-public slots:
     void doWork(const QImage &origin) {
         QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 
@@ -47,9 +44,6 @@ public slots:
 
         emit resultReady(newImage);
     }
-
-signals:
-    void resultReady(const QImage &image);
 };
 
 GreyscaleFilter::GreyscaleFilter(QObject *parent) :
@@ -57,35 +51,12 @@ GreyscaleFilter::GreyscaleFilter(QObject *parent) :
 {
 }
 
-GreyscaleFilter::~GreyscaleFilter()
-{
-    workerThread.quit();
-    workerThread.wait();
-}
-
 QString GreyscaleFilter::name() const
 {
     return QLatin1String("Greyscale");
 }
 
-void GreyscaleFilter::applyFilter(const QImage &origin)
+AbstractImageFilterWorker *GreyscaleFilter::createWorker()
 {
-    Worker *worker = new Worker;
-    worker->moveToThread(&workerThread);
-
-    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
-    //connect(&workerThread, &QThread::started, worker, &Worker::doWork);
-    connect(worker, &Worker::resultReady, this, &GreyscaleFilter::handleResults);
-
-    workerThread.start();
-
-    QMetaObject::invokeMethod(worker,"doWork",Qt::QueuedConnection,Q_ARG(QImage, origin));
-    //worker->doWork(origin);
+    return new GreyscaleFilterWorker();
 }
-
-void GreyscaleFilter::handleResults(const QImage &image)
-{
-    emit filterApplied(image);
-}
-
-#include "greyscalefilter.moc"

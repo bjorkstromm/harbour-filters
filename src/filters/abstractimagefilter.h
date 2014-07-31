@@ -32,6 +32,16 @@
 
 class ImageFilterParameter;
 
+class AbstractImageFilterWorker : public QObject
+{
+    Q_OBJECT
+public:
+    Q_INVOKABLE virtual void doWork(const QImage &origin) = 0;
+
+signals:
+    void resultReady(const QImage &image);
+};
+
 class AbstractImageFilter : public QObject
 {
     Q_OBJECT
@@ -42,14 +52,17 @@ public:
     virtual QString name() const = 0;
     virtual QList<ImageFilterParameter *> parameterList();
 
-    Q_INVOKABLE virtual void applyFilter(const QImage &origin) = 0;
+    Q_INVOKABLE virtual void applyFilter(const QImage &origin);
+
+protected:
+    virtual AbstractImageFilterWorker *createWorker();
 
 signals:
     void nameChanged(QString);
     void filterApplied(const QImage &image);
 
-public slots:
-
+private slots:
+    void handleResults(const QImage &image);
 };
 
 Q_DECLARE_METATYPE(AbstractImageFilter*)

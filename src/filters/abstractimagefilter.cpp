@@ -27,6 +27,8 @@
 #include "abstractimagefilter.h"
 #include "imagefilterparameter.h"
 
+#include <QThread>
+
 AbstractImageFilter::AbstractImageFilter(QObject *parent) :
     QObject(parent)
 {
@@ -35,4 +37,40 @@ AbstractImageFilter::AbstractImageFilter(QObject *parent) :
 QList<ImageFilterParameter *> AbstractImageFilter::parameterList()
 {
     return QList<ImageFilterParameter *>();
+}
+
+void AbstractImageFilter::applyFilter(const QImage &origin)
+{
+    AbstractImageFilterWorker *worker = createWorker();
+
+    if(worker)
+    {
+        QThread *workerThread = new QThread(this);
+        worker->moveToThread(workerThread);
+
+        connect(workerThread, SIGNAL(finished()), worker, SLOT(deleteLater()));
+        connect(worker, SIGNAL(resultReady(QImage)), this, SLOT(handleResults(QImage)));
+
+        workerThread->start();
+        QMetaObject::invokeMethod(worker,"doWork",Qt::QueuedConnection,Q_ARG(QImage, origin));
+    }
+    else
+    {
+        emit filterApplied(origin);
+    }
+}
+
+AbstractImageFilterWorker *AbstractImageFilter::createWorker()
+{
+    return 0;
+}
+
+void AbstractImageFilter::handleResults(const QImage &image)
+{
+    emit filterApplied(image);
+
+    QThread *thread = sender()->thread();
+    thread->quit();
+    thread->wait();
+    thread->deleteLater();
 }
