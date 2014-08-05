@@ -37,11 +37,9 @@ public:
 
     QString name() const;
     QList<ImageFilterParameter *> parameterList();
-    void applyFilter(const QImage &origin);
 
-signals:
-
-public slots:
+protected:
+    AbstractImageFilterWorker *createWorker();
 
 private:
     QList<ImageFilterParameter*> m_params;

@@ -28,6 +28,47 @@
 
 #include "imagefilterparameter.h"
 
+class BrightnessFilterWorker : public AbstractImageFilterWorker
+{
+public:
+    BrightnessFilterWorker(int brightness, int contrast)
+    {
+        m_brightness = brightness;
+        m_contrast = (contrast + 100) / 100.0;
+    }
+
+    void doWork(const QImage &origin) {
+        int contrastLookup[256];
+
+        for(int i = 0; i < 256; i++)
+        {
+            contrastLookup[i] = qBound(0,(int)((((((qreal)i/255.0)-0.5)*m_contrast)+0.5)*255),255);
+        }
+
+        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+
+        QRgb * line;
+
+        for(int y = 0; y<newImage.height(); y++){
+            line = (QRgb *)origin.scanLine(y);
+
+            for(int x = 0; x<newImage.width(); x++)
+            {
+                newImage.setPixel(x,y,qRgb(
+                                       qBound(0, contrastLookup[qRed(line[x])] + m_brightness, 255),
+                                       qBound(0, contrastLookup[qGreen(line[x])] + m_brightness, 255),
+                                       qBound(0, contrastLookup[qBlue(line[x])] + m_brightness, 255)));
+            }
+        }
+
+        emit resultReady(newImage);
+    }
+
+private:
+    int m_brightness;
+    qreal m_contrast;
+};
+
 BrightnessFilter::BrightnessFilter(QObject *parent) :
     AbstractImageFilter(parent)
 {
@@ -43,38 +84,12 @@ QString BrightnessFilter::name() const
     return QLatin1String("Brightness");
 }
 
+AbstractImageFilterWorker *BrightnessFilter::createWorker()
+{
+    return new BrightnessFilterWorker(m_params[0]->value(), m_params[1]->value());
+}
+
 QList<ImageFilterParameter *> BrightnessFilter::parameterList()
 {
     return m_params;
-}
-
-void BrightnessFilter::applyFilter(const QImage &origin)
-{
-    int contrastLookup[256];
-    qreal contrast = (m_params[1]->value() + 100) / 100.0;
-
-    for(int i = 0; i < 256; i++)
-    {
-        contrastLookup[i] = qBound(0,(int)((((((qreal)i/255.0)-0.5)*contrast)+0.5)*255),255);
-    }
-
-    int brightness = m_params[0]->value();
-
-    QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
-
-    QRgb * line;
-
-    for(int y = 0; y<newImage.height(); y++){
-        line = (QRgb *)origin.scanLine(y);
-
-        for(int x = 0; x<newImage.width(); x++)
-        {
-            newImage.setPixel(x,y,qRgb(
-                                   qBound(0, contrastLookup[qRed(line[x])] + brightness, 255),
-                                   qBound(0, contrastLookup[qGreen(line[x])] + brightness, 255),
-                                   qBound(0, contrastLookup[qBlue(line[x])] + brightness, 255)));
-        }
-    }
-
-    emit filterApplied(newImage);
 }

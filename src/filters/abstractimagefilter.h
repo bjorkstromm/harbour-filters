@@ -63,6 +63,9 @@ signals:
 
 private slots:
     void handleResults(const QImage &image);
+
+private:
+    bool m_isApplyingFilter;
 };
 
 Q_DECLARE_METATYPE(AbstractImageFilter*)

@@ -28,6 +28,7 @@
 
 class GreyscaleFilterWorker : public AbstractImageFilterWorker
 {
+public:
     void doWork(const QImage &origin) {
         QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
 

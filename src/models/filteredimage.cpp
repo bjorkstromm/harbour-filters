@@ -95,6 +95,8 @@ static QImage rotate(const QImage &src,
 FilteredImage::FilteredImage(QQuickItem *parent) :
     QQuickItem(parent)
 {
+    m_isApplyingFilter = false;
+
     setFlag(QQuickItem::ItemHasContents, true);
 
     connect(this,SIGNAL(imageChanged(QImage)),SLOT(update()));
@@ -135,6 +137,11 @@ void FilteredImage::setSource(const QString &source)
     }
 }
 
+bool FilteredImage::isApplyingFilter()
+{
+    return m_isApplyingFilter;
+}
+
 QImage FilteredImage::image() const
 {
     return m_filteredImage.isNull() ? m_image : m_filteredImage;
@@ -153,7 +160,8 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     {
         connect(m_filter,SIGNAL(filterApplied(QImage)),this,SLOT(filterApplied(QImage)));
 
-        filter->applyFilter(m_image);
+        m_filter->applyFilter(m_image);
+        setIsApplyingFilter(true);
     }
     else
     {
@@ -169,6 +177,7 @@ void FilteredImage::reApplyFilter()
     if(m_filter != 0)
     {
         m_filter->applyFilter(m_image);
+        setIsApplyingFilter(true);
     }
 }
 
@@ -260,6 +269,16 @@ void FilteredImage::filterApplied(const QImage &image)
 
     m_imageChanged = true;
     emit imageChanged(m_filteredImage);
+    setIsApplyingFilter(false);
+}
+
+void FilteredImage::setIsApplyingFilter(bool value)
+{
+    if(m_isApplyingFilter != value)
+    {
+        m_isApplyingFilter = value;
+        emit isApplyingFilterChanged(true);
+    }
 }
 
 

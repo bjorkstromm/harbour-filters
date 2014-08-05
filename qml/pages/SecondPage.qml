@@ -108,6 +108,7 @@ Page {
                         }
 
                         delegate: Slider {
+                            id: slider
                             value: model.value
                             minimumValue: model.min
                             maximumValue: model.max
@@ -116,11 +117,34 @@ Page {
                             valueText: sliderValue
                             label: model.name
 
-                            onDownChanged: {
-                                if(!down && model.value !== sliderValue)
+                            function applyValue() {
+                                if(model.value !== sliderValue && !filteredImage.isApplyingFilter)
                                 {
                                     model.value = sliderValue;
                                     filteredImage.reApplyFilter();
+                                }
+                            }
+
+                            onSliderValueChanged: applyValue();
+
+                            onDownChanged: {
+                                if(down)
+                                {
+                                    timer.start();
+                                }
+                            }
+
+                            Timer {
+                                id: timer;
+                                interval: 500;
+                                repeat: true
+                                onTriggered: {
+                                    slider.applyValue();
+
+                                    if(!slider.down && model.value === slider.sliderValue)
+                                    {
+                                        stop();
+                                    }
                                 }
                             }
                         }
@@ -213,6 +237,11 @@ Page {
                         }
                     }
                 }
+            }
+
+            BusyIndicator {
+                anchors.centerIn: parent
+                running: filteredImage.isApplyingFilter
             }
         }
     }

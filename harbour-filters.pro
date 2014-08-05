@@ -23,8 +23,8 @@ SOURCES += src/harbour-filters.cpp \
     src/filters/greyscalefilter.cpp \
     src/filters/abstractimagefilter.cpp \
     src/filters/brightnessfilter.cpp \
-    src/filters/blurfilter.cpp \
-    src/filters/sharpenfilter.cpp \
+    #src/filters/blurfilter.cpp \
+    #src/filters/sharpenfilter.cpp \
     src/models/filterlistmodel.cpp \
     src/filters/imagefilterparameter.cpp \
     src/models/filterparameterlistmodel.cpp \
@@ -61,8 +61,8 @@ HEADERS += \
     src/filters/greyscalefilter.h \
     src/filters/abstractimagefilter.h \
     src/filters/brightnessfilter.h \
-    src/filters/blurfilter.h \
-    src/filters/sharpenfilter.h \
+    #src/filters/blurfilter.h \
+    #src/filters/sharpenfilter.h \
     src/models/filterlistmodel.h \
     src/filters/imagefilterparameter.h \
     src/models/filterparameterlistmodel.h \

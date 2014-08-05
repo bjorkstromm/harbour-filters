@@ -37,11 +37,14 @@ class FilteredImage : public QQuickItem
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(QImage image READ image NOTIFY imageChanged)
+    Q_PROPERTY(bool isApplyingFilter READ isApplyingFilter NOTIFY isApplyingFilterChanged)
 public:
     explicit FilteredImage(QQuickItem *parent = 0);
 
     QString source() const;
     void setSource(const QString &source);
+
+    bool isApplyingFilter();
 
     QImage image() const;
 
@@ -57,6 +60,7 @@ signals:
     void sourceChanged(QString source);
     void imageChanged(QImage image);
     void imageSaved(QString fileName);
+    void isApplyingFilterChanged(bool);
 
 public slots:
 
@@ -64,11 +68,14 @@ private slots:
     void filterApplied(const QImage &image);
 
 private:
+    void setIsApplyingFilter(bool value);
+
     AbstractImageFilter* m_filter;
     QImage m_filteredImage;
     QImage m_image;
     QString m_source;
     bool m_imageChanged;
+    bool m_isApplyingFilter;
 };
 
 #endif // FILTEREDIMAGE_H

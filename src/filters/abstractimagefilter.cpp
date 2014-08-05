@@ -32,6 +32,7 @@
 AbstractImageFilter::AbstractImageFilter(QObject *parent) :
     QObject(parent)
 {
+    m_isApplyingFilter = false;
 }
 
 QList<ImageFilterParameter *> AbstractImageFilter::parameterList()
@@ -41,6 +42,9 @@ QList<ImageFilterParameter *> AbstractImageFilter::parameterList()
 
 void AbstractImageFilter::applyFilter(const QImage &origin)
 {
+    if(m_isApplyingFilter)
+        return;
+
     AbstractImageFilterWorker *worker = createWorker();
 
     if(worker)
@@ -50,6 +54,8 @@ void AbstractImageFilter::applyFilter(const QImage &origin)
 
         connect(workerThread, SIGNAL(finished()), worker, SLOT(deleteLater()));
         connect(worker, SIGNAL(resultReady(QImage)), this, SLOT(handleResults(QImage)));
+
+        m_isApplyingFilter = true;
 
         workerThread->start();
         QMetaObject::invokeMethod(worker,"doWork",Qt::QueuedConnection,Q_ARG(QImage, origin));
@@ -73,4 +79,6 @@ void AbstractImageFilter::handleResults(const QImage &image)
     thread->quit();
     thread->wait();
     thread->deleteLater();
+
+    m_isApplyingFilter = false;
 }
