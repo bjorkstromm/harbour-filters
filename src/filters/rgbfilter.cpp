@@ -25,8 +25,44 @@
 */
 
 #include "rgbfilter.h"
-
 #include "imagefilterparameter.h"
+
+class RgbFilterWorker : public AbstractImageFilterWorker
+{
+public:
+    RgbFilterWorker(int red, int green, int blue)
+    {
+        m_red = red;
+        m_green = green;
+        m_blue = blue;
+    }
+
+    void doWork(const QImage &origin) {
+        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+
+        QRgb * line;
+
+        for(int y = 0; y<newImage.height(); y++){
+            line = (QRgb *)origin.scanLine(y);
+
+            for(int x = 0; x<newImage.width(); x++)
+            {
+                newImage.setPixel(x,y,qRgb(
+                                       qBound(0, qRed(line[x]) + m_red, 255),
+                                       qBound(0, qGreen(line[x]) + m_green, 255),
+                                       qBound(0, qBlue(line[x]) + m_blue, 255)));
+            }
+        }
+
+        emit resultReady(newImage);
+    }
+
+private:
+    int m_red;
+    int m_green;
+    int m_blue;
+};
+
 
 RGBFilter::RGBFilter(QObject *parent) :
     AbstractImageFilter(parent)
@@ -50,27 +86,9 @@ QList<ImageFilterParameter *> RGBFilter::parameterList()
     return m_params;
 }
 
-void RGBFilter::applyFilter(const QImage &origin)
+AbstractImageFilterWorker *RGBFilter::createWorker()
 {
-    int red = m_params[0]->value();
-    int green = m_params[1]->value();
-    int blue = m_params[2]->value();
-
-    QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
-
-    QRgb * line;
-
-    for(int y = 0; y<newImage.height(); y++){
-        line = (QRgb *)origin.scanLine(y);
-
-        for(int x = 0; x<newImage.width(); x++)
-        {
-            newImage.setPixel(x,y,qRgb(
-                                   qBound(0, qRed(line[x]) + red, 255),
-                                   qBound(0, qGreen(line[x]) + green, 255),
-                                   qBound(0, qBlue(line[x]) + blue, 255)));
-        }
-    }
-
-    emit filterApplied(newImage);
+    return new RgbFilterWorker(m_params[0]->value(),
+                               m_params[1]->value(),
+                               m_params[2]->value());
 }

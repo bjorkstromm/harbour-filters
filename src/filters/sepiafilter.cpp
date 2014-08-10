@@ -26,6 +26,30 @@
 
 #include "sepiafilter.h"
 
+class SepiaFilterWorker : public AbstractImageFilterWorker
+{
+public:
+    void doWork(const QImage &origin) {
+        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+
+        QRgb * line;
+
+        for(int y = 0; y<newImage.height(); y++){
+            line = (QRgb *)origin.scanLine(y);
+
+            for(int x = 0; x<newImage.width(); x++){
+                int r = qBound(0,(int)((qRed(line[x]) * .393) + (qGreen(line[x]) *.769) + (qRed(line[x]) * .189)),255);
+                int g = qBound(0,(int)((qRed(line[x]) * .349) + (qGreen(line[x]) *.686) + (qRed(line[x]) * .168)),255);
+                int b = qBound(0,(int)((qRed(line[x]) * .272) + (qGreen(line[x]) *.534) + (qRed(line[x]) * .131)),255);
+
+                newImage.setPixel(x,y, qRgb(r, g, b));
+            }
+        }
+
+        emit resultReady(newImage);
+    }
+};
+
 SepiaFilter::SepiaFilter(QObject *parent) :
     AbstractImageFilter(parent)
 {
@@ -36,23 +60,7 @@ QString SepiaFilter::name() const
     return QLatin1String("Sepia");
 }
 
-void SepiaFilter::applyFilter(const QImage &origin)
+AbstractImageFilterWorker *SepiaFilter::createWorker()
 {
-    QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
-
-    QRgb * line;
-
-    for(int y = 0; y<newImage.height(); y++){
-        line = (QRgb *)origin.scanLine(y);
-
-        for(int x = 0; x<newImage.width(); x++){
-            int r = qBound(0,(int)((qRed(line[x]) * .393) + (qGreen(line[x]) *.769) + (qRed(line[x]) * .189)),255);
-            int g = qBound(0,(int)((qRed(line[x]) * .349) + (qGreen(line[x]) *.686) + (qRed(line[x]) * .168)),255);
-            int b = qBound(0,(int)((qRed(line[x]) * .272) + (qGreen(line[x]) *.534) + (qRed(line[x]) * .131)),255);
-
-            newImage.setPixel(x,y, qRgb(r, g, b));
-        }
-    }
-
-    emit filterApplied(newImage);
+    return new SepiaFilterWorker();
 }

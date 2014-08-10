@@ -36,11 +36,9 @@ public:
     explicit SepiaFilter(QObject *parent = 0);
 
     QString name() const;
-    void applyFilter(const QImage &origin);
 
-signals:
-
-public slots:
+protected:
+    AbstractImageFilterWorker *createWorker();
 
 };
 

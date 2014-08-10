@@ -160,8 +160,10 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     {
         connect(m_filter,SIGNAL(filterApplied(QImage)),this,SLOT(filterApplied(QImage)));
 
-        m_filter->applyFilter(m_image);
-        setIsApplyingFilter(true);
+        if(m_filter->applyFilter(m_image))
+        {
+            setIsApplyingFilter(true);
+        }
     }
     else
     {
@@ -176,8 +178,10 @@ void FilteredImage::reApplyFilter()
 {
     if(m_filter != 0)
     {
-        m_filter->applyFilter(m_image);
-        setIsApplyingFilter(true);
+        if(m_filter->applyFilter(m_image))
+        {
+            setIsApplyingFilter(true);
+        }
     }
 }
 

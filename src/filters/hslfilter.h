@@ -24,22 +24,26 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef RGBSWAPFILTER_H
-#define RGBSWAPFILTER_H
+#ifndef HSLFILTER_H
+#define HSLFILTER_H
 
 #include "abstractimagefilter.h"
 
-class RGBSwapFilter : public AbstractImageFilter
+class HSLFilter : public AbstractImageFilter
 {
     Q_OBJECT
 public:
-    explicit RGBSwapFilter(QObject *parent = 0);
+    explicit HSLFilter(QObject *parent = 0);
 
     QString name() const;
+    QList<ImageFilterParameter *> parameterList();
 
 protected:
     AbstractImageFilterWorker *createWorker();
 
+private:
+    QList<ImageFilterParameter*> m_params;
+
 };
 
-#endif // RGBSWAPFILTER_H
+#endif // HSLFILTER_H

@@ -52,10 +52,10 @@ public:
     virtual QString name() const = 0;
     virtual QList<ImageFilterParameter *> parameterList();
 
-    Q_INVOKABLE virtual void applyFilter(const QImage &origin);
+    bool applyFilter(const QImage &origin);
 
 protected:
-    virtual AbstractImageFilterWorker *createWorker();
+    virtual AbstractImageFilterWorker *createWorker() = 0;
 
 signals:
     void nameChanged(QString);

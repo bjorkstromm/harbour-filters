@@ -40,10 +40,10 @@ QList<ImageFilterParameter *> AbstractImageFilter::parameterList()
     return QList<ImageFilterParameter *>();
 }
 
-void AbstractImageFilter::applyFilter(const QImage &origin)
+bool AbstractImageFilter::applyFilter(const QImage &origin)
 {
     if(m_isApplyingFilter)
-        return;
+        return false;
 
     AbstractImageFilterWorker *worker = createWorker();
 
@@ -59,16 +59,13 @@ void AbstractImageFilter::applyFilter(const QImage &origin)
 
         workerThread->start();
         QMetaObject::invokeMethod(worker,"doWork",Qt::QueuedConnection,Q_ARG(QImage, origin));
+
+        return true;
     }
     else
     {
-        emit filterApplied(origin);
+        return false;
     }
-}
-
-AbstractImageFilterWorker *AbstractImageFilter::createWorker()
-{
-    return 0;
 }
 
 void AbstractImageFilter::handleResults(const QImage &image)

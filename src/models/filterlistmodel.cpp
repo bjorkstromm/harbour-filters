@@ -33,6 +33,7 @@
 //#include "src/filters/blurfilter.h"
 //#include "src/filters/sharpenfilter.h"
 #include "src/filters/rgbfilter.h"
+#include "src/filters/hslfilter.h"
 #include "src/filters/negativefilter.h"
 #include "src/filters/rgbswapfilter.h"
 
@@ -45,6 +46,7 @@ FilterListModel::FilterListModel(QObject *parent) :
               //<< new BlurFilter(this)
               //<< new SharpenFilter(this)
               << new RGBFilter(this)
+              << new HSLFilter(this)
               << new NegativeFilter(this)
               << new RGBSwapFilter(this);
 }

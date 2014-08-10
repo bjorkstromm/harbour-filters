@@ -103,48 +103,27 @@ Page {
                     width: parent.width
 
                     Repeater {
+                        id: parameters
+
                         model: FilterParameterListModel {
                             id: filterParameterList
                         }
 
                         delegate: Slider {
                             id: slider
-                            value: model.value
                             minimumValue: model.min
                             maximumValue: model.max
                             stepSize: 1
                             width: parent.width
                             valueText: sliderValue
                             label: model.name
+                            enabled: !filteredImage.isApplyingFilter
 
-                            function applyValue() {
-                                if(model.value !== sliderValue && !filteredImage.isApplyingFilter)
+                            onDownChanged: {
+                                if(!down && model.value !== sliderValue)
                                 {
                                     model.value = sliderValue;
                                     filteredImage.reApplyFilter();
-                                }
-                            }
-
-                            onSliderValueChanged: applyValue();
-
-                            onDownChanged: {
-                                if(down)
-                                {
-                                    timer.start();
-                                }
-                            }
-
-                            Timer {
-                                id: timer;
-                                interval: 500;
-                                repeat: true
-                                onTriggered: {
-                                    slider.applyValue();
-
-                                    if(!slider.down && model.value === slider.sliderValue)
-                                    {
-                                        stop();
-                                    }
                                 }
                             }
                         }
@@ -242,6 +221,7 @@ Page {
             BusyIndicator {
                 anchors.centerIn: parent
                 running: filteredImage.isApplyingFilter
+                size: BusyIndicatorSize.Large
             }
         }
     }
@@ -255,11 +235,12 @@ Page {
 
     Component {
         id: imgCover
-
-        FilteredCoverImage {
-            id: filteredCoverImage
-            anchors.fill: parent
-            image: filteredImage.image
+        CoverBackground {
+            FilteredCoverImage {
+                id: filteredCoverImage
+                anchors.fill: parent
+                image: filteredImage.image
+            }
         }
     }
 
