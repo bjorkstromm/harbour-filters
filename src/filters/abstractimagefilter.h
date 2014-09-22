@@ -51,6 +51,7 @@ public:
 
     virtual QString name() const = 0;
     virtual QList<ImageFilterParameter *> parameterList();
+    virtual void resetParameters();
 
     bool applyFilter(const QImage &origin);
 

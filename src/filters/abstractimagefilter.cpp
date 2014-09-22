@@ -28,6 +28,7 @@
 #include "imagefilterparameter.h"
 
 #include <QThread>
+#include <QDebug>
 
 AbstractImageFilter::AbstractImageFilter(QObject *parent) :
     QObject(parent)
@@ -38,6 +39,11 @@ AbstractImageFilter::AbstractImageFilter(QObject *parent) :
 QList<ImageFilterParameter *> AbstractImageFilter::parameterList()
 {
     return QList<ImageFilterParameter *>();
+}
+
+void AbstractImageFilter::resetParameters()
+{
+    return;
 }
 
 bool AbstractImageFilter::applyFilter(const QImage &origin)

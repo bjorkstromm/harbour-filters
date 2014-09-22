@@ -37,6 +37,7 @@ public:
 
     QString name() const;
     QList<ImageFilterParameter *> parameterList();
+    void resetParameters();
 
 protected:
     AbstractImageFilterWorker* createWorker();

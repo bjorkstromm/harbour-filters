@@ -125,11 +125,8 @@ void FilteredImage::setSource(const QString &source)
             m_image = rotate(m_image, meta.orientation());
         }
 
-        //setContentsSize(m_image.size());
         setImplicitWidth((qreal)m_image.width());
         setImplicitHeight((qreal)m_image.height());
-        //setWidth((qreal)m_image.width());
-        //setHeight((qreal)m_image.height());
 
         m_imageChanged = true;
         emit sourceChanged(m_source);
@@ -214,25 +211,6 @@ void FilteredImage::saveImage()
     emit imageSaved(filename);
 }
 
-//void FilteredImage::paint(QPainter *painter)
-//{
-//    QImage scaled;
-
-//    if(m_filteredImage.isNull())
-//    {
-//        scaled = m_image.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
-//    }
-//    else
-//    {
-//        scaled = m_filteredImage.scaled(width(),height(),Qt::KeepAspectRatio,Qt::SmoothTransformation);
-//    }
-
-//    QRect rect = scaled.rect();
-//    rect.moveCenter(boundingRect().toAlignedRect().center());
-
-//    painter->drawImage(rect,scaled);
-//}
-
 QSGNode *FilteredImage::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
     QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode*>(oldNode);
@@ -255,9 +233,6 @@ QSGNode *FilteredImage::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
         delete node->texture();
 
         node->setTexture(window()->createTextureFromImage(*image));
-//        node->setFiltering(QSGTexture::Linear);
-//        node->texture()->setMipmapFiltering(QSGTexture::Linear);
-//        node->texture()->bind();
 
         node->setRect(0,0,implicitWidth(),implicitHeight());
 

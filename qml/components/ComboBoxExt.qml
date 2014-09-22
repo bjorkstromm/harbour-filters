@@ -218,8 +218,8 @@ ValueButton {
 
         Page {
             // Added nasty hack for allowing other orientations.
-            anchors.fill: mainWindow.contentItem
             allowedOrientations: mainWindow.allowedOrientations
+            //anchors.fill: mainWindow
 
             Component.onCompleted: {
                 menu.height = 1 // XXX hack to allow us to check the MenuItems visibilities

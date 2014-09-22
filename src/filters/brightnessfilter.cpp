@@ -38,26 +38,25 @@ public:
     }
 
     void doWork(const QImage &origin) {
+        QImage newImage(origin);
+        QRgb *bits = (QRgb *)newImage.bits();
         int contrastLookup[256];
+        int pixel = 0;
+        int width = newImage.width();
+        int height = newImage.height();
 
         for(int i = 0; i < 256; i++)
         {
             contrastLookup[i] = qBound(0,(int)((((((qreal)i/255.0)-0.5)*m_contrast)+0.5)*255),255);
         }
 
-        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
-
-        QRgb * line;
-
-        for(int y = 0; y<newImage.height(); y++){
-            line = (QRgb *)origin.scanLine(y);
-
-            for(int x = 0; x<newImage.width(); x++)
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++)
             {
-                newImage.setPixel(x,y,qRgb(
-                                       qBound(0, contrastLookup[qRed(line[x])] + m_brightness, 255),
-                                       qBound(0, contrastLookup[qGreen(line[x])] + m_brightness, 255),
-                                       qBound(0, contrastLookup[qBlue(line[x])] + m_brightness, 255)));
+                pixel = (y*width)+x;
+                bits[pixel] = qRgb(qBound(0, contrastLookup[qRed(bits[pixel])] + m_brightness, 255),
+                                      qBound(0, contrastLookup[qGreen(bits[pixel])] + m_brightness, 255),
+                                      qBound(0, contrastLookup[qBlue(bits[pixel])] + m_brightness, 255));
             }
         }
 
@@ -75,8 +74,7 @@ BrightnessFilter::BrightnessFilter(QObject *parent) :
     m_params << new ImageFilterParameter("Brightness", -100, 100, this)
              << new ImageFilterParameter("Contrast", -100, 100, this);
 
-    m_params[0]->setValue(0);
-    m_params[1]->setValue(0);
+    resetParameters();
 }
 
 QString BrightnessFilter::name() const
@@ -92,4 +90,10 @@ AbstractImageFilterWorker *BrightnessFilter::createWorker()
 QList<ImageFilterParameter *> BrightnessFilter::parameterList()
 {
     return m_params;
+}
+
+void BrightnessFilter::resetParameters()
+{
+    m_params[0]->setValue(0);
+    m_params[1]->setValue(0);
 }

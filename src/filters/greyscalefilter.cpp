@@ -30,16 +30,18 @@ class GreyscaleFilterWorker : public AbstractImageFilterWorker
 {
 public:
     void doWork(const QImage &origin) {
-        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+        QImage newImage(origin);
+        QRgb *bits = (QRgb *)newImage.bits();
+        int pixel = 0;
+        int width = newImage.width();
+        int height = newImage.height();
+        int average = 0;
 
-        QRgb * line;
-
-        for(int y = 0; y<newImage.height(); y++){
-            line = (QRgb *)origin.scanLine(y);
-
-            for(int x = 0; x<newImage.width(); x++){
-                int average = (qRed(line[x]) + qGreen(line[x]) + qRed(line[x]))/3;
-                newImage.setPixel(x,y, qRgb(average, average, average));
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++){
+                pixel = (y*width)+x;
+                average = (qRed(bits[pixel]) + qGreen(bits[pixel]) + qRed(bits[pixel]))/3;
+                bits[pixel] = qRgb(average, average, average);
             }
         }
 

@@ -79,8 +79,8 @@ Page {
                     currentIndex: 0
 
                     onCurrentIndexChanged: {
-                        filteredImage.applyFilter(filterListModel.objectAt(currentIndex - 1));
                         filterParameterList.setFilter(filterListModel.objectAt(currentIndex - 1));
+                        filteredImage.applyFilter(filterListModel.objectAt(currentIndex - 1));
                     }
 
                     menu: ContextMenu {
@@ -100,6 +100,7 @@ Page {
                 }
 
                 Column {
+                    id: parameterPlaceholder
                     width: parent.width
 
                     Repeater {
@@ -114,7 +115,7 @@ Page {
                             minimumValue: model.min
                             maximumValue: model.max
                             stepSize: 1
-                            width: parent.width
+                            width: parameterPlaceholder.width
                             valueText: sliderValue
                             label: model.name
                             enabled: !filteredImage.isApplyingFilter
@@ -125,6 +126,10 @@ Page {
                                     model.value = sliderValue;
                                     filteredImage.reApplyFilter();
                                 }
+                            }
+
+                            Component.onCompleted: {
+                                value = model.value;
                             }
                         }
                     }

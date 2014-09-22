@@ -146,20 +146,21 @@ public:
     }
 
     void doWork(const QImage &origin) {
-        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
-
-        const QRgb * line;
+        QImage newImage(origin);
+        QRgb *bits = (QRgb *)newImage.bits();
+        int pixel = 0;
+        int width = newImage.width();
+        int height = newImage.height();
         COLOUR rgb;
         HSL hsl;
 
-        for(int y = 0; y<newImage.height(); y++){
-            line = (QRgb *)origin.constScanLine(y);
-
-            for(int x = 0; x<newImage.width(); x++)
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++)
             {
-                rgb = {qRed(line[x]) / 255.0,
-                              qGreen(line[x]) / 255.0,
-                              qBlue(line[x]) / 255.0 };
+                pixel = (y*width)+x;
+                rgb = {qRed(bits[pixel]) / 255.0,
+                              qGreen(bits[pixel]) / 255.0,
+                              qBlue(bits[pixel]) / 255.0 };
 
                 hsl = RGB2HSL(rgb);
 
@@ -169,7 +170,7 @@ public:
 
                 rgb = HSL2RGB(hsl);
 
-                newImage.setPixel(x,y,qRgb(rgb.r * 255,rgb.g * 255,rgb.b * 255));
+                bits[pixel] = qRgb(rgb.r * 255,rgb.g * 255,rgb.b * 255);
             }
         }
 
@@ -189,9 +190,7 @@ HSLFilter::HSLFilter(QObject *parent) :
              << new ImageFilterParameter("saturation", -100, 100, this)
              << new ImageFilterParameter("lightness", -100, 100, this);
 
-    m_params[0]->setValue(0);
-    m_params[1]->setValue(0);
-    m_params[2]->setValue(0);
+    resetParameters();
 }
 
 QString HSLFilter::name() const
@@ -204,9 +203,15 @@ QList<ImageFilterParameter *> HSLFilter::parameterList()
     return m_params;
 }
 
+void HSLFilter::resetParameters()
+{
+    m_params[0]->setValue(0);
+    m_params[1]->setValue(0);
+    m_params[2]->setValue(0);
+}
+
 AbstractImageFilterWorker *HSLFilter::createWorker()
 {
-    qDebug() << m_params[0]->value() << " " << m_params[1]->value() << " " << m_params[2]->value();
     return new HslFilterWorker(m_params[0]->value(),
                                m_params[1]->value(),
                                m_params[2]->value());

@@ -30,19 +30,19 @@ class SepiaFilterWorker : public AbstractImageFilterWorker
 {
 public:
     void doWork(const QImage &origin) {
-        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+        QImage newImage(origin);
+        QRgb *bits = (QRgb *)newImage.bits();
+        int pixel = 0;
+        int width = newImage.width();
+        int height = newImage.height();
 
-        QRgb * line;
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++){
+                pixel = (y*width)+x;
 
-        for(int y = 0; y<newImage.height(); y++){
-            line = (QRgb *)origin.scanLine(y);
-
-            for(int x = 0; x<newImage.width(); x++){
-                int r = qBound(0,(int)((qRed(line[x]) * .393) + (qGreen(line[x]) *.769) + (qRed(line[x]) * .189)),255);
-                int g = qBound(0,(int)((qRed(line[x]) * .349) + (qGreen(line[x]) *.686) + (qRed(line[x]) * .168)),255);
-                int b = qBound(0,(int)((qRed(line[x]) * .272) + (qGreen(line[x]) *.534) + (qRed(line[x]) * .131)),255);
-
-                newImage.setPixel(x,y, qRgb(r, g, b));
+                bits[pixel] = qRgb(qBound(0,(int)((qRed(bits[pixel]) * .393) + (qGreen(bits[pixel]) *.769) + (qRed(bits[pixel]) * .189)),255),
+                                   qBound(0,(int)((qRed(bits[pixel]) * .349) + (qGreen(bits[pixel]) *.686) + (qRed(bits[pixel]) * .168)),255),
+                                   qBound(0,(int)((qRed(bits[pixel]) * .272) + (qGreen(bits[pixel]) *.534) + (qRed(bits[pixel]) * .131)),255));
             }
         }
 

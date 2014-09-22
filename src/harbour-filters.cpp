@@ -69,6 +69,10 @@ int main(int argc, char *argv[])
 
     view->setSource(SailfishApp::pathTo("qml/harbour-filters.qml"));
 
+    // Don't allow releasing.
+    view->setPersistentSceneGraph(true);
+    view->setPersistentOpenGLContext(true);
+
     view->show();
 
     return app->exec();

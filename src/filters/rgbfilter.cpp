@@ -38,19 +38,19 @@ public:
     }
 
     void doWork(const QImage &origin) {
-        QImage newImage(origin.width(), origin.height(), QImage::Format_ARGB32);
+        QImage newImage(origin);
+        QRgb *bits = (QRgb *)newImage.bits();
+        int pixel = 0;
+        int width = newImage.width();
+        int height = newImage.height();
 
-        QRgb * line;
-
-        for(int y = 0; y<newImage.height(); y++){
-            line = (QRgb *)origin.scanLine(y);
-
-            for(int x = 0; x<newImage.width(); x++)
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++)
             {
-                newImage.setPixel(x,y,qRgb(
-                                       qBound(0, qRed(line[x]) + m_red, 255),
-                                       qBound(0, qGreen(line[x]) + m_green, 255),
-                                       qBound(0, qBlue(line[x]) + m_blue, 255)));
+                pixel = (y*width)+x;
+                bits[pixel] = qRgb(qBound(0, qRed(bits[pixel]) + m_red, 255),
+                                   qBound(0, qGreen(bits[pixel]) + m_green, 255),
+                                   qBound(0, qBlue(bits[pixel]) + m_blue, 255));
             }
         }
 
@@ -71,9 +71,7 @@ RGBFilter::RGBFilter(QObject *parent) :
              << new ImageFilterParameter("green", -100, 100, this)
              << new ImageFilterParameter("blue", -100, 100, this);
 
-    m_params[0]->setValue(0);
-    m_params[1]->setValue(0);
-    m_params[2]->setValue(0);
+    resetParameters();
 }
 
 QString RGBFilter::name() const
@@ -84,6 +82,13 @@ QString RGBFilter::name() const
 QList<ImageFilterParameter *> RGBFilter::parameterList()
 {
     return m_params;
+}
+
+void RGBFilter::resetParameters()
+{
+    m_params[0]->setValue(0);
+    m_params[1]->setValue(0);
+    m_params[2]->setValue(0);
 }
 
 AbstractImageFilterWorker *RGBFilter::createWorker()

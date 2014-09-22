@@ -30,8 +30,6 @@
 #include "src/filters/sepiafilter.h"
 #include "src/filters/greyscalefilter.h"
 #include "src/filters/brightnessfilter.h"
-//#include "src/filters/blurfilter.h"
-//#include "src/filters/sharpenfilter.h"
 #include "src/filters/rgbfilter.h"
 #include "src/filters/hslfilter.h"
 #include "src/filters/negativefilter.h"
@@ -43,8 +41,6 @@ FilterListModel::FilterListModel(QObject *parent) :
     m_filters << new SepiaFilter(this)
               << new GreyscaleFilter(this)
               << new BrightnessFilter(this)
-              //<< new BlurFilter(this)
-              //<< new SharpenFilter(this)
               << new RGBFilter(this)
               << new HSLFilter(this)
               << new NegativeFilter(this)
