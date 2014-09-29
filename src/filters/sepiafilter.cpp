@@ -32,18 +32,12 @@ public:
     void doWork(const QImage &origin) {
         QImage newImage(origin);
         QRgb *bits = (QRgb *)newImage.bits();
-        int pixel = 0;
-        int width = newImage.width();
-        int height = newImage.height();
+        int pixels = newImage.height() * newImage.width();
 
-        for(int y = 0; y<height; y++){
-            for(int x = 0; x<width; x++){
-                pixel = (y*width)+x;
-
-                bits[pixel] = qRgb(qBound(0,(int)((qRed(bits[pixel]) * .393) + (qGreen(bits[pixel]) *.769) + (qRed(bits[pixel]) * .189)),255),
-                                   qBound(0,(int)((qRed(bits[pixel]) * .349) + (qGreen(bits[pixel]) *.686) + (qRed(bits[pixel]) * .168)),255),
-                                   qBound(0,(int)((qRed(bits[pixel]) * .272) + (qGreen(bits[pixel]) *.534) + (qRed(bits[pixel]) * .131)),255));
-            }
+        for(int i = 0; i<pixels; i++){
+            bits[i] = qRgb(qBound(0,(int)((qRed(bits[i]) * .393) + (qGreen(bits[i]) *.769) + (qRed(bits[i]) * .189)),255),
+                           qBound(0,(int)((qRed(bits[i]) * .349) + (qGreen(bits[i]) *.686) + (qRed(bits[i]) * .168)),255),
+                           qBound(0,(int)((qRed(bits[i]) * .272) + (qGreen(bits[i]) *.534) + (qRed(bits[i]) * .131)),255));
         }
 
         emit resultReady(newImage);

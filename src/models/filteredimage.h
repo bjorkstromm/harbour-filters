@@ -52,6 +52,7 @@ public:
     Q_INVOKABLE void reApplyFilter();
     Q_INVOKABLE void applyCurrentFilter();
     Q_INVOKABLE void saveImage();
+    Q_INVOKABLE void resetFilter();
 
     //virtual void paint(QPainter *painter);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *);

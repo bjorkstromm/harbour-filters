@@ -40,18 +40,12 @@ public:
     void doWork(const QImage &origin) {
         QImage newImage(origin);
         QRgb *bits = (QRgb *)newImage.bits();
-        int pixel = 0;
-        int width = newImage.width();
-        int height = newImage.height();
+        int pixels = newImage.height() * newImage.width();
 
-        for(int y = 0; y<height; y++){
-            for(int x = 0; x<width; x++)
-            {
-                pixel = (y*width)+x;
-                bits[pixel] = qRgb(qBound(0, qRed(bits[pixel]) + m_red, 255),
-                                   qBound(0, qGreen(bits[pixel]) + m_green, 255),
-                                   qBound(0, qBlue(bits[pixel]) + m_blue, 255));
-            }
+        for(int i = 0; i<pixels; i++){
+            bits[i] = qRgb(qBound(0, qRed(bits[i]) + m_red, 255),
+                           qBound(0, qGreen(bits[i]) + m_green, 255),
+                           qBound(0, qBlue(bits[i]) + m_blue, 255));
         }
 
         emit resultReady(newImage);

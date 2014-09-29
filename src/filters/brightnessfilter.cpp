@@ -41,23 +41,17 @@ public:
         QImage newImage(origin);
         QRgb *bits = (QRgb *)newImage.bits();
         int contrastLookup[256];
-        int pixel = 0;
-        int width = newImage.width();
-        int height = newImage.height();
+        int pixels = newImage.height() * newImage.width();
 
         for(int i = 0; i < 256; i++)
         {
             contrastLookup[i] = qBound(0,(int)((((((qreal)i/255.0)-0.5)*m_contrast)+0.5)*255),255);
         }
 
-        for(int y = 0; y<height; y++){
-            for(int x = 0; x<width; x++)
-            {
-                pixel = (y*width)+x;
-                bits[pixel] = qRgb(qBound(0, contrastLookup[qRed(bits[pixel])] + m_brightness, 255),
-                                      qBound(0, contrastLookup[qGreen(bits[pixel])] + m_brightness, 255),
-                                      qBound(0, contrastLookup[qBlue(bits[pixel])] + m_brightness, 255));
-            }
+        for(int i = 0; i < pixels; i++){
+            bits[i] = qRgb(qBound(0, contrastLookup[qRed(bits[i])] + m_brightness, 255),
+                               qBound(0, contrastLookup[qGreen(bits[i])] + m_brightness, 255),
+                               qBound(0, contrastLookup[qBlue(bits[i])] + m_brightness, 255));
         }
 
         emit resultReady(newImage);

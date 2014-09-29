@@ -96,7 +96,10 @@ void FilterParameterListModel::setFilter(AbstractImageFilter *filter)
 {
     beginResetModel();
     m_filter = filter;
-    m_filter->resetParameters();
+    if(m_filter != 0)
+    {
+        m_filter->resetParameters();
+    }
     endResetModel();
 }
 

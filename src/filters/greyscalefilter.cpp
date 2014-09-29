@@ -32,17 +32,12 @@ public:
     void doWork(const QImage &origin) {
         QImage newImage(origin);
         QRgb *bits = (QRgb *)newImage.bits();
-        int pixel = 0;
-        int width = newImage.width();
-        int height = newImage.height();
+        int pixels = newImage.height() * newImage.width();
         int average = 0;
 
-        for(int y = 0; y<height; y++){
-            for(int x = 0; x<width; x++){
-                pixel = (y*width)+x;
-                average = (qRed(bits[pixel]) + qGreen(bits[pixel]) + qRed(bits[pixel]))/3;
-                bits[pixel] = qRgb(average, average, average);
-            }
+        for(int i = 0; i<pixels; i++){
+            average = (qRed(bits[i]) + qGreen(bits[i]) + qRed(bits[i]))/3;
+            bits[i] = qRgb(average, average, average);
         }
 
         emit resultReady(newImage);

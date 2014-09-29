@@ -144,6 +144,19 @@ QImage FilteredImage::image() const
     return m_filteredImage.isNull() ? m_image : m_filteredImage;
 }
 
+void FilteredImage::resetFilter()
+{
+    if(m_filter != 0)
+    {
+        m_filter->resetParameters();
+    }
+
+    m_filteredImage = m_image;
+    m_imageChanged = true;
+    emit imageChanged(m_filteredImage);
+    setIsApplyingFilter(false);
+}
+
 void FilteredImage::applyFilter(AbstractImageFilter *filter)
 {
     if(m_filter != 0)
@@ -157,17 +170,21 @@ void FilteredImage::applyFilter(AbstractImageFilter *filter)
     {
         connect(m_filter,SIGNAL(filterApplied(QImage)),this,SLOT(filterApplied(QImage)));
 
-        if(m_filter->applyFilter(m_image))
+        if(m_filter->parameterList().isEmpty())
         {
-            setIsApplyingFilter(true);
+            if(m_filter->applyFilter(m_image))
+            {
+                setIsApplyingFilter(true);
+            }
+        }
+        else
+        {
+            resetFilter();
         }
     }
     else
     {
-        m_filteredImage = m_image;
-
-        m_imageChanged = true;
-        emit imageChanged(m_filteredImage);
+        resetFilter();
     }
 }
 
@@ -256,7 +273,7 @@ void FilteredImage::setIsApplyingFilter(bool value)
     if(m_isApplyingFilter != value)
     {
         m_isApplyingFilter = value;
-        emit isApplyingFilterChanged(true);
+        emit isApplyingFilterChanged(m_isApplyingFilter);
     }
 }
 
