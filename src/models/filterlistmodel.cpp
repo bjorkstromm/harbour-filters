@@ -34,6 +34,7 @@
 #include "src/filters/hslfilter.h"
 #include "src/filters/negativefilter.h"
 #include "src/filters/rgbswapfilter.h"
+#include "src/filters/framefilter.h"
 
 FilterListModel::FilterListModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -44,7 +45,8 @@ FilterListModel::FilterListModel(QObject *parent) :
               << new RGBFilter(this)
               << new HSLFilter(this)
               << new NegativeFilter(this)
-              << new RGBSwapFilter(this);
+              << new RGBSwapFilter(this)
+              << new FrameFilter(this);
 }
 
 int FilterListModel::rowCount(const QModelIndex &parent) const
