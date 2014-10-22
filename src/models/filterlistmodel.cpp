@@ -31,7 +31,7 @@
 #include "src/filters/greyscalefilter.h"
 #include "src/filters/brightnessfilter.h"
 #include "src/filters/rgbfilter.h"
-#include "src/filters/hslfilter.h"
+//#include "src/filters/hslfilter.h"
 #include "src/filters/negativefilter.h"
 #include "src/filters/rgbswapfilter.h"
 #include "src/filters/framefilter.h"
@@ -43,10 +43,10 @@ FilterListModel::FilterListModel(QObject *parent) :
               << new GreyscaleFilter(this)
               << new BrightnessFilter(this)
               << new RGBFilter(this)
-              << new HSLFilter(this)
+//              << new HSLFilter(this)
+              << new FrameFilter(this)
               << new NegativeFilter(this)
-              << new RGBSwapFilter(this)
-              << new FrameFilter(this);
+              << new RGBSwapFilter(this);
 }
 
 int FilterListModel::rowCount(const QModelIndex &parent) const

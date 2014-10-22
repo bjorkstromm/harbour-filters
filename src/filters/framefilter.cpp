@@ -45,19 +45,19 @@ public:
 
         QLinearGradient gradientLeft(0,0,(qreal)newImage.width(),0);
         gradientLeft.setColorAt(0, Qt::black);
-        gradientLeft.setColorAt(m_horizontal, Qt::transparent);
+        gradientLeft.setColorAt(m_vertical, Qt::transparent);
 
         QLinearGradient gradientRight((qreal)newImage.width(),0,0,0);
         gradientRight.setColorAt(0, Qt::black);
-        gradientRight.setColorAt(m_horizontal, Qt::transparent);
+        gradientRight.setColorAt(m_vertical, Qt::transparent);
 
         QLinearGradient gradientTop(0,0,0,(qreal)newImage.height());
         gradientTop.setColorAt(0, Qt::black);
-        gradientTop.setColorAt(m_vertical, Qt::transparent);
+        gradientTop.setColorAt(m_horizontal, Qt::transparent);
 
         QLinearGradient gradientBottom(0,(qreal)newImage.height(),0,0);
         gradientBottom.setColorAt(0, Qt::black);
-        gradientBottom.setColorAt(m_vertical, Qt::transparent);
+        gradientBottom.setColorAt(m_horizontal, Qt::transparent);
 
         painter.begin(&newImage);
         painter.fillRect(0,0,newImage.width(),newImage.height(),gradientLeft);
