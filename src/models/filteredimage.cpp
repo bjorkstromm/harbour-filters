@@ -95,6 +95,7 @@ static QImage rotate(const QImage &src,
 FilteredImage::FilteredImage(QQuickItem *parent) :
     QQuickItem(parent)
 {
+    m_filter = 0;
     m_isApplyingFilter = false;
 
     setFlag(QQuickItem::ItemHasContents, true);
