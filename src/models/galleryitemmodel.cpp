@@ -30,6 +30,8 @@
 #include <QStandardPaths>
 #include <QDateTime>
 #include <QTimer>
+#include <QStorageInfo>
+#include <QDebug>
 
 GalleryItemModel::GalleryItemModel(QObject *parent) :
     QAbstractListModel(parent)
@@ -76,18 +78,40 @@ void GalleryItemModel::refresh()
         }
     }
 
-    QDirIterator iter(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation),
-                      QStringList() << "*.png" << "*.jpg" << "*.jpeg",
-                      QDir::NoFilter,
-                      QDirIterator::Subdirectories);
+    QSet<QString> pictureLocations;
+    pictureLocations << QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 
-    while(iter.hasNext())
+    // iterate through mount volumes and try to find external drives with Pictures
+    for (const QStorageInfo &storage : QStorageInfo::mountedVolumes())
     {
-        iter.next();
+        QString mountPoint = storage.rootPath();
+        QString pictureDir = mountPoint + QDir::separator() + "Pictures";
 
-        if (iter.fileInfo().isFile() && !m_imageFiles.contains(iter.fileInfo()))
+        if (storage.isValid() &&
+            storage.isReady() &&
+            mountPoint.startsWith("/run/media/") && // Sailfish OS specific mount point base for SD cards!
+            QDir(pictureDir).exists())
         {
-            AddImageFileSorted(iter.fileInfo(), 0, m_imageFiles.length() -1);
+            qDebug() << "Found photo storage:" << pictureDir;
+            pictureLocations << pictureDir;
+        }
+    }
+
+    foreach (QString dir, pictureLocations)
+    {
+        QDirIterator iter(dir,
+                          QStringList() << "*.png" << "*.jpg" << "*.jpeg",
+                          QDir::NoFilter,
+                          QDirIterator::Subdirectories);
+
+        while(iter.hasNext())
+        {
+            iter.next();
+
+            if (iter.fileInfo().isFile() && !m_imageFiles.contains(iter.fileInfo()))
+            {
+                AddImageFileSorted(iter.fileInfo(), 0, m_imageFiles.length() -1);
+            }
         }
     }
 }
